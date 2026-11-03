@@ -13,6 +13,10 @@ What the Supabase Auth decision means:
 - The backend only needs the **publishable (anon) key** for this, not the service_role key, which is safer.
 - In automated tests the Supabase Auth calls are replaced by a fake (mock), so tests need no internet or secrets.
 
+**Hidden gem labels (decided 3 Nov 2026): three labels**, not two. **Hidden Gem** = rating >= 4.3 and review_count <= 100; **Popular** = review_count > 100; places with fewer reviews and a lower rating, or no rating at all, get **no label**. All thresholds are configurable.
+
+**Real ratings (decided 3 Nov 2026):** after Phase 2A, cross-match the 55 sample places with Google Places ratings (step 2.9a). Not the full 1,241 for now.
+
 ## 1. Goal and what the supervisor wants
 
 MyMakanRoute helps tourists and locals in Penang find hidden gem food stalls near famous places and then plan a multi-stop food trip ("food hopping").
@@ -147,6 +151,14 @@ A **migration** is a numbered SQL file that changes the database structure. Runn
 | 2.6 | `POST /api/hopping/route` (no login needed, for the demo) | Route Planner | CW, T | API test with 5 sample places |
 | 2.7 | `scripts/feasibility.js` prints results; DW drafts `docs/FEASIBILITY.md` | (evidence) | CW, DW | Student reads it |
 | 2.8 | CR + SR, **commit Phase 2A** | | CR, SR | |
+
+### Step 2.9a: Real ratings from Google (right after 2A, added 3 Nov 2026)
+
+| # | What | Submodule | Helper | How to test |
+| --- | --- | --- | --- | --- |
+| 2.9a | `npm run import:ratings`: for the **55 sample places only**, look up each place in the Google Places API (New) by name + location, accept a match only if the names are similar and the locations are within ~100 m, then store Google's rating, review count and place ID. Unmatched places keep their sample values and are listed. Show "Ratings from Google" where used. Report the match rate in FEASIBILITY.md | Hidden Gem Highlighting | CW, T, SR | Unit tests for the name/distance matching with fake responses (no network); dry-run mode prints matches before writing |
+
+Needs from the student: a Google Cloud project with Places API (New) enabled and an API key (`GOOGLE_PLACES_API_KEY` in `backend/.env`, billing account required even for the free quota). Google's terms only allow the place ID to be stored permanently, so ratings are refreshed by re-running the script; note this in FEASIBILITY.md. The other 1,186 OSM places are out of scope for now.
 
 **Dijkstra** = a classic algorithm that finds the quickest path between two points on a network of roads (nodes = junctions, edges = road pieces with a travel time).
 **Ant Colony Optimisation (ACO)** = a nature-inspired method: many simulated "ants" build visiting orders, good orders leave more "pheromone", so later ants prefer them. After many rounds a short order emerges. It suits the Intelligent Computing major.
