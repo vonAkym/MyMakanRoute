@@ -1,0 +1,68 @@
+/* Landing page (/): shared section layout and the reveal-on-scroll animation.
+   All colours, fonts and spacing come from styles/tokens.css. */
+
+.landing {
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+}
+
+html:has(.landing) {
+  scroll-padding-top: calc(var(--nav-height) + var(--space-sm)); /* stop below the sticky navbar */
+}
+
+.landing__main:focus,
+.lp-section:focus {
+  outline: none;
+}
+
+.lp-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.lp-section {
+  padding: var(--section-gap) 0;
+}
+
+/* Slightly lighter band to separate sections. */
+.lp-section--alt {
+  background: var(--color-section);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Reveal on scroll. Only hidden after useRevealOnScroll sets data-reveal="hidden", which it
+   does only when IntersectionObserver exists and motion is allowed. */
+.lp-reveal[data-reveal="hidden"] {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.lp-reveal[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 700ms var(--ease-out),
+    transform 700ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-reveal[data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Printing: show every section fully, whatever the scroll position was. */
+@media print {
+  .lp-reveal[data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

@@ -27,7 +27,7 @@ describe("A: empty numbers use their defaults", () => {
       HIDDEN_GEM_MIN_RATING: "  ",
       HIDDEN_GEM_MAX_REVIEWS: " ",
     });
-    expect(config.hiddenGem).toEqual({ minRating: 4.3, maxReviews: 100 });
+    expect(config.hiddenGem).toEqual({ minRating: 4.3, maxReviews: 100, popularMinReviews: 100 });
   });
 });
 

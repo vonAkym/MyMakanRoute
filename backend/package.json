@@ -10,6 +10,7 @@
     "db:migrate": "node db/migrate.js",
     "db:seed": "node db/seeds/seed.js",
     "import:osm": "node scripts/import-osm.js",
+    "build:road-graph": "node scripts/build-road-graph.js",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

@@ -28,6 +28,8 @@ const envSchema = z.object({
   SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
   HIDDEN_GEM_MIN_RATING: z.coerce.number().min(0).max(5).default(4.3),
   HIDDEN_GEM_MAX_REVIEWS: z.coerce.number().int().min(0).default(100),
+  // "Popular" label: places with MORE than this many reviews.
+  POPULAR_MIN_REVIEWS: z.coerce.number().int().min(0).default(100),
   CORS_ORIGINS: z.string().default("http://localhost:5173,http://localhost:8081"),
 });
 
@@ -83,6 +85,7 @@ function loadConfig(env) {
     hiddenGem: Object.freeze({
       minRating: e.HIDDEN_GEM_MIN_RATING,
       maxReviews: e.HIDDEN_GEM_MAX_REVIEWS,
+      popularMinReviews: e.POPULAR_MIN_REVIEWS,
     }),
     corsOrigins: Object.freeze(
       e.CORS_ORIGINS.split(",")

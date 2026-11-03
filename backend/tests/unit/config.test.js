@@ -21,7 +21,7 @@ describe("loadConfig", () => {
   test("applies defaults and converts types", () => {
     const config = loadConfig(VALID);
     expect(config.port).toBe(3000);
-    expect(config.hiddenGem).toEqual({ minRating: 4.3, maxReviews: 100 });
+    expect(config.hiddenGem).toEqual({ minRating: 4.3, maxReviews: 100, popularMinReviews: 100 });
     expect(config.corsOrigins).toEqual(["http://localhost:5173", "http://localhost:8081"]);
     expect(config.databaseUrl).toBeUndefined();
   });
@@ -32,13 +32,21 @@ describe("loadConfig", () => {
       PORT: "4000",
       HIDDEN_GEM_MIN_RATING: "4.5",
       HIDDEN_GEM_MAX_REVIEWS: "50",
+      POPULAR_MIN_REVIEWS: "200",
       CORS_ORIGINS: " http://a.test , http://b.test ",
       DATABASE_URL: "postgresql://u:p@localhost:5432/db",
     });
     expect(config.port).toBe(4000);
-    expect(config.hiddenGem).toEqual({ minRating: 4.5, maxReviews: 50 });
+    expect(config.hiddenGem).toEqual({ minRating: 4.5, maxReviews: 50, popularMinReviews: 200 });
     expect(config.corsOrigins).toEqual(["http://a.test", "http://b.test"]);
     expect(config.databaseUrl).toBe("postgresql://u:p@localhost:5432/db");
+  });
+
+  test("treats an empty POPULAR_MIN_REVIEWS as not set and rejects a negative one", () => {
+    expect(loadConfig({ ...VALID, POPULAR_MIN_REVIEWS: "" }).hiddenGem.popularMinReviews).toBe(100);
+    expect(() => loadConfig({ ...VALID, POPULAR_MIN_REVIEWS: "-1" })).toThrow(
+      /POPULAR_MIN_REVIEWS/,
+    );
   });
 
   test("treats an empty DATABASE_URL as not set", () => {
@@ -112,6 +120,6 @@ describe("loadConfig hidden gem thresholds", () => {
   // An empty HIDDEN_GEM_MIN_RATING= line must not silently become 0.
   test("an empty threshold uses the default instead of 0", () => {
     const config = loadConfig({ ...VALID, HIDDEN_GEM_MIN_RATING: "", HIDDEN_GEM_MAX_REVIEWS: "" });
-    expect(config.hiddenGem).toEqual({ minRating: 4.3, maxReviews: 100 });
+    expect(config.hiddenGem).toEqual({ minRating: 4.3, maxReviews: 100, popularMinReviews: 100 });
   });
 });

@@ -1,0 +1,113 @@
+.discover-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+.discover-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.location-card {
+  padding: var(--space-md);
+}
+
+.location-card__title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-lg);
+}
+
+.location-card__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.discover-results__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.discover-results__title {
+  margin: 0;
+}
+
+.discover-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.place-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.discover-map {
+  height: 65dvh;
+  min-height: 360px;
+}
+
+/* Mobile: one of list or map at a time, chosen with the toggle. */
+.view-toggle {
+  align-self: flex-start;
+}
+
+.view-toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: 40px;
+  padding: 0 var(--space-md);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--duration-normal) ease;
+}
+
+.view-toggle__btn.is-active {
+  background: var(--color-card);
+  color: var(--color-primary-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.is-hidden-mobile {
+  display: none;
+}
+
+/* Desktop: split view, list on the left and a sticky map on the right. */
+@media (min-width: 1024px) {
+  .discover-layout {
+    grid-template-columns: minmax(360px, 440px) 1fr;
+    align-items: start;
+  }
+
+  .view-toggle {
+    display: none;
+  }
+
+  .is-hidden-mobile {
+    display: flex;
+  }
+
+  .discover-map,
+  .discover-map.is-hidden-mobile {
+    display: block;
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-md));
+    height: calc(100dvh - var(--header-height) - var(--space-xl));
+  }
+}

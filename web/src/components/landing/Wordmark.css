@@ -1,0 +1,35 @@
+/* Landing wordmark: bold white Poppins with the orange "Makan". */
+
+.lp-wordmark {
+  flex-shrink: 0;
+  color: var(--color-foreground);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lp-wordmark__accent {
+  color: var(--color-primary-text);
+}
+
+.lp-wordmark--nav {
+  font-size: 1.35rem;
+}
+
+.lp-wordmark--footer {
+  font-size: 1.5rem;
+}
+
+@media (max-width: 420px) {
+  .lp-wordmark--nav {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 359px) {
+  .lp-wordmark--nav {
+    font-size: 1rem;
+  }
+}

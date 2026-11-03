@@ -1,0 +1,240 @@
+/* Hero: two columns on desktop (text | plate), stacked text-first below 1024px. */
+
+.lp-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(3rem, 7vw, 6rem) 0 var(--section-gap);
+}
+
+/* Soft warm light behind the plate. */
+.lp-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -6%;
+  width: 56%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle closest-side, var(--color-primary-glow), transparent 65%);
+  pointer-events: none;
+}
+
+.lp-hero__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.lp-hero__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-lg);
+}
+
+.lp-hero__title {
+  margin: 0;
+  color: var(--color-foreground);
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 5.2vw, 4rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.lp-hero__lead {
+  max-width: 46ch;
+  margin: 0;
+  color: var(--color-muted-foreground);
+  font-size: var(--text-lg);
+  line-height: 1.7;
+}
+
+.lp-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+/* ---------- Feature badges ---------- */
+
+.lp-badges {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-md);
+  width: 100%;
+  margin: var(--space-lg) 0 0;
+  padding: var(--space-lg) 0 0;
+  list-style: none;
+  border-top: 1px solid var(--color-border);
+}
+
+.lp-badges__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.lp-badges__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  color: var(--color-primary-text);
+  background: var(--color-primary-tint);
+}
+
+.lp-badges__title {
+  display: block;
+  color: var(--color-foreground);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.lp-badges__text {
+  display: block;
+  color: var(--color-muted-foreground);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+/* ---------- Plate art ---------- */
+
+.lp-hero__art {
+  display: flex;
+  justify-content: center;
+}
+
+.lp-hero__plate-wrap {
+  position: relative;
+  width: min(100%, 540px);
+}
+
+/* The photo is cropped to a circle around the plate (object-position comes from the data). */
+.lp-hero__plate {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 12px var(--color-primary-tint),
+    var(--shadow-xl);
+}
+
+/* Round "Est. 2026" badge on the plate's upper left. */
+.lp-hero__badge {
+  position: absolute;
+  top: 6%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: clamp(84px, 20%, 112px);
+  aspect-ratio: 1;
+  margin: 0;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+  box-shadow:
+    0 0 0 6px var(--color-background),
+    var(--shadow-lg);
+  text-align: center;
+  line-height: 1.1;
+}
+
+.lp-hero__badge-top {
+  color: var(--color-primary-text);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.lp-hero__badge-year {
+  color: var(--color-foreground);
+  font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+  font-weight: 700;
+}
+
+.lp-hero__deco {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(var(--shadow-drop));
+  animation: lp-float 6s ease-in-out infinite;
+}
+
+.lp-hero__deco--chilli {
+  width: 22%;
+  right: -2%;
+  top: 8%;
+  transform: rotate(-20deg);
+}
+
+.lp-hero__deco--leaf {
+  width: 28%;
+  left: -6%;
+  bottom: 6%;
+  animation-delay: -2s;
+}
+
+.lp-hero__deco--anise {
+  width: 14%;
+  right: 4%;
+  bottom: 4%;
+  animation-delay: -4s;
+}
+
+@keyframes lp-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -10px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .lp-hero__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .lp-hero__plate-wrap {
+    width: min(100%, 460px);
+  }
+}
+
+@media (max-width: 639px) {
+  .lp-badges {
+    grid-template-columns: 1fr;
+  }
+
+  .lp-hero__ctas {
+    width: 100%;
+  }
+
+  .lp-hero__ctas .lp-btn {
+    flex: 1 1 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-hero__deco {
+    animation: none;
+  }
+}

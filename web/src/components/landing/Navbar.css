@@ -1,0 +1,219 @@
+/* Landing top bar: sticky, dark, slightly see-through. */
+
+.lp-nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  background: var(--color-nav-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-nav-border);
+}
+
+.lp-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  max-width: var(--container-max);
+  min-height: var(--nav-height);
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.lp-nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lp-nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  color: var(--color-muted-foreground);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--duration-normal) ease;
+}
+
+/* Orange underline grows in on hover; stays on the active page. */
+.lp-nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-primary);
+  transform: scaleX(0);
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.lp-nav__link:hover {
+  color: var(--color-foreground);
+}
+
+.lp-nav__link:hover::after,
+.lp-nav__link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+.lp-nav__link[aria-current="page"] {
+  color: var(--color-foreground);
+  font-weight: 600;
+}
+
+.lp-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.lp-nav__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-foreground);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-normal) ease,
+    color var(--duration-normal) ease,
+    background-color var(--duration-normal) ease;
+}
+
+.lp-nav__icon:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+.lp-nav__count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+.lp-nav__menu {
+  display: none;
+}
+
+/* Search bar slides out under the top bar. */
+.lp-nav__search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg) var(--space-md);
+  position: relative;
+}
+
+.lp-nav__search-icon {
+  position: absolute;
+  left: calc(var(--space-lg) + 16px);
+  color: var(--color-muted-foreground);
+  pointer-events: none;
+}
+
+.lp-nav__search input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 16px 0 44px;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+  color: var(--color-foreground);
+}
+
+.lp-nav__search input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-glow);
+}
+
+@media (max-width: 899px) {
+  .lp-nav__menu {
+    display: inline-flex;
+  }
+
+  .lp-nav__nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  .lp-nav__links {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: var(--space-sm) var(--space-lg) var(--space-md);
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .lp-nav__links.is-open {
+    display: flex;
+  }
+
+  .lp-nav__link {
+    width: 100%;
+    font-size: var(--text-base);
+  }
+
+  .lp-nav__link::after {
+    right: auto;
+    width: 32px;
+  }
+}
+
+@media (max-width: 420px) {
+  .lp-nav__inner {
+    gap: var(--space-sm);
+    padding: 0 var(--space-md);
+  }
+
+  .lp-nav__actions {
+    gap: 4px;
+  }
+}
+
+/* Very small phones (under 360px): slightly smaller icons so the bar never overflows. */
+@media (max-width: 359px) {
+  .lp-nav__inner {
+    padding: 0 12px;
+  }
+
+  .lp-nav__actions {
+    gap: 2px;
+  }
+
+  .lp-nav__icon {
+    width: 40px;
+    height: 40px;
+  }
+}

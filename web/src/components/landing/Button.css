@@ -1,0 +1,66 @@
+/* Landing button: pill, small uppercase Poppins. Hover = orange fill with dark text. */
+
+.lp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: 48px;
+  padding: 12px 28px;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-normal) ease,
+    border-color var(--duration-normal) ease,
+    color var(--duration-normal) ease,
+    transform var(--duration-normal) var(--ease-out),
+    box-shadow var(--duration-normal) ease;
+}
+
+.lp-btn--filled {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.lp-btn--outline {
+  background: transparent;
+  color: var(--color-foreground);
+}
+
+.lp-btn:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  color: var(--color-on-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-button);
+}
+
+.lp-btn:active {
+  transform: translateY(0);
+}
+
+.lp-btn:focus-visible {
+  outline: 3px solid var(--color-ring);
+  outline-offset: 3px;
+  border-radius: var(--radius-full);
+}
+
+.lp-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-btn:hover {
+    transform: none;
+  }
+}

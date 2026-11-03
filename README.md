@@ -7,12 +7,12 @@ Supervisor: Dr. Zarul Fitri Zaaba
 
 ## Modules
 
-| Module | Submodules |
-| --- | --- |
-| User Management | Registration, Login, Profile and Preference Setup |
-| Food Discovery | Food Place Searching, Hidden Gem Highlighting, Food Place Visualisation |
-| Food Hopping | Itinerary Planner, Route Planner, Itinerary Review and Customisation, Past Food Hopping Visualisation |
-| Food Stalls Analytics | Food Places Visualisation, Food Places Analysis, Food Place Suggestion |
+| Module                | Submodules                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------- |
+| User Management       | Registration, Login, Profile and Preference Setup                                                     |
+| Food Discovery        | Food Place Searching, Hidden Gem Highlighting, Food Place Visualisation                               |
+| Food Hopping          | Itinerary Planner, Route Planner, Itinerary Review and Customisation, Past Food Hopping Visualisation |
+| Food Stalls Analytics | Food Places Visualisation, Food Places Analysis, Food Place Suggestion                                |
 
 Filtering (halal, budget, cuisine, dietary needs) is applied inside the modules above.
 
@@ -83,6 +83,7 @@ npm.cmd run format        # Prettier: fixes formatting
 
 - **Sample data (55 places):** real Penang place names and coordinates from OpenStreetMap, with **invented** ratings, review counts, prices, halal flags and opening hours. They are for testing only and are **not real reviews**. In the database they are marked `source='sample'` and `is_sample=true`.
 - **Optional full import:** `npm run import:osm` loads about 1,241 food places (Gelugor/USM to George Town). Data © OpenStreetMap contributors, licensed under ODbL (Open Database License).
+- **Landing page photos:** the food photos in `web/src/assets/landing/photos/` were supplied by the student. Their licence must be confirmed before any public release. They are illustrative (they show the dish, not the actual stall).
 - **Finding:** OpenStreetMap has **no ratings or review counts** and only about 2% of places have a halal tag. The hidden gem rule needs ratings, so it cannot run on OpenStreetMap data alone. That is why the sample data exists.
 
 ## Status
