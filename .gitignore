@@ -4,6 +4,7 @@ node_modules/
 !.env.example
 dist/
 build/
+coverage/
 .expo/
 *.log
 .DS_Store

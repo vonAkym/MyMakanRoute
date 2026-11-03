@@ -1,13 +1,16 @@
-const express = require("express");
-const cors = require("cors");
+// Starts the HTTP server. The app itself is built in app.js.
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+let config;
+try {
+  config = require("./config");
+} catch (err) {
+  // Bad or missing settings: show the readable list, not a stack trace.
+  console.error(err.message);
+  process.exit(1);
+}
 
-app.get("/health", (req, res) => {
-  res.json({ status: "ok", app: "MyMakanRoute" });
+const app = require("./app");
+
+app.listen(config.port, () => {
+  console.log(`MyMakanRoute API on port ${config.port} (${config.env})`);
 });
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`MyMakanRoute API on port ${port}`));

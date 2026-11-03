@@ -1,0 +1,1326 @@
+{
+  "_note": "SAMPLE DATA: real OpenStreetMap names and coordinates; ratings, review counts, prices, halal flags and opening hours are INVENTED for testing. Not real reviews.",
+  "_attribution": "Names and coordinates (c) OpenStreetMap contributors, ODbL.",
+  "places": [
+    {
+      "osm_id": "way/976552716",
+      "name": "Nasi Kandar Line Clear",
+      "lat": 5.4195664,
+      "lng": 100.3325378,
+      "cuisine": "nasi kandar",
+      "area": "George Town",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4.4,
+      "review_count": 2850,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["00:00", "23:59"]],
+        "tue": [["00:00", "23:59"]],
+        "wed": [["00:00", "23:59"]],
+        "thu": [["00:00", "23:59"]],
+        "fri": [["00:00", "23:59"]],
+        "sat": [["00:00", "23:59"]],
+        "sun": [["00:00", "23:59"]],
+        "osm": "24/7"
+      }
+    },
+    {
+      "osm_id": "node/2995382755",
+      "name": "Hameediyah Tandoori House",
+      "lat": 5.4184859,
+      "lng": 100.3327949,
+      "cuisine": "nasi kandar",
+      "area": "George Town",
+      "is_halal": true,
+      "price_level": 2,
+      "avg_rating": 4.5,
+      "review_count": 1980,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["10:00", "22:00"]],
+        "tue": [["10:00", "22:00"]],
+        "wed": [["10:00", "22:00"]],
+        "thu": [["10:00", "22:00"]],
+        "fri": [["10:00", "22:00"]],
+        "sat": [["10:00", "22:00"]],
+        "sun": [["10:00", "22:00"]]
+      }
+    },
+    {
+      "osm_id": "node/1384040489",
+      "name": "Deen Claypot-Briyani",
+      "lat": 5.4164155,
+      "lng": 100.3387337,
+      "cuisine": "indian",
+      "area": "George Town",
+      "is_halal": true,
+      "price_level": 2,
+      "avg_rating": 4.2,
+      "review_count": 640,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["11:00", "22:00"]],
+        "tue": [["11:00", "22:00"]],
+        "wed": [["11:00", "22:00"]],
+        "thu": [["11:00", "22:00"]],
+        "fri": [["11:00", "22:00"]],
+        "sat": [["11:00", "22:00"]],
+        "sun": [["11:00", "22:00"]]
+      }
+    },
+    {
+      "osm_id": "node/2814709495",
+      "name": "Toh Soon Cafe",
+      "lat": 5.4188283,
+      "lng": 100.3320926,
+      "cuisine": "cafe",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.3,
+      "review_count": 2100,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["08:00", "17:00"]],
+        "tue": [["08:00", "17:00"]],
+        "wed": [["08:00", "17:00"]],
+        "thu": [["08:00", "17:00"]],
+        "fri": [["08:00", "17:00"]],
+        "sat": [["08:00", "17:00"]],
+        "osm": "Mo-Sa 08:00-17:00; Su off"
+      }
+    },
+    {
+      "osm_id": "node/4336568093",
+      "name": "Tek Sen Restaurant",
+      "lat": 5.4174168,
+      "lng": 100.3359484,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 3,
+      "avg_rating": 4.6,
+      "review_count": 2400,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [
+          ["12:00", "15:00"],
+          ["18:00", "21:00"]
+        ],
+        "tue": [
+          ["12:00", "15:00"],
+          ["18:00", "21:00"]
+        ],
+        "wed": [
+          ["12:00", "15:00"],
+          ["18:00", "21:00"]
+        ],
+        "thu": [
+          ["12:00", "15:00"],
+          ["18:00", "21:00"]
+        ],
+        "fri": [
+          ["12:00", "15:00"],
+          ["18:00", "21:00"]
+        ],
+        "sat": [
+          ["12:00", "15:00"],
+          ["18:00", "21:00"]
+        ],
+        "sun": [
+          ["12:00", "15:00"],
+          ["18:00", "21:00"]
+        ],
+        "osm": "Mo-Su 12:00-15:00, 18:00-21:00"
+      }
+    },
+    {
+      "osm_id": "node/7236278085",
+      "name": "Penang Road Famous Laksa",
+      "lat": 5.4166546,
+      "lng": 100.3311479,
+      "cuisine": "malay",
+      "area": "George Town",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4.1,
+      "review_count": 1500,
+      "dietary": [],
+      "opening_hours": {
+        "thu": [["09:00", "17:30"]],
+        "fri": [["09:00", "17:30"]],
+        "sat": [["09:00", "17:30"]],
+        "sun": [["09:00", "17:30"]],
+        "mon": [["09:00", "17:30"]],
+        "tue": [["09:00", "17:30"]],
+        "osm": "Th-Tu 09:00-17:30"
+      }
+    },
+    {
+      "osm_id": "node/7246501885",
+      "name": "Penang Road Famous Teochew Chendul - Ais Kacang",
+      "lat": 5.41714,
+      "lng": 100.3306743,
+      "cuisine": "dessert",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.4,
+      "review_count": 2950,
+      "dietary": ["vegetarian"],
+      "opening_hours": {
+        "mon": [["10:30", "19:00"]],
+        "tue": [["10:30", "19:00"]],
+        "wed": [["10:30", "19:00"]],
+        "thu": [["10:30", "19:00"]],
+        "fri": [["10:30", "19:00"]],
+        "sat": [["10:30", "19:00"]],
+        "sun": [["10:30", "19:00"]]
+      }
+    },
+    {
+      "osm_id": "node/1877272703",
+      "name": "Woodlands Vegetarian Indian Restaurant",
+      "lat": 5.4179549,
+      "lng": 100.3405483,
+      "cuisine": "indian",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 2,
+      "avg_rating": 4.4,
+      "review_count": 760,
+      "dietary": ["vegetarian"],
+      "opening_hours": {
+        "mon": [["08:30", "22:00"]],
+        "tue": [["08:30", "22:00"]],
+        "wed": [["08:30", "22:00"]],
+        "thu": [["08:30", "22:00"]],
+        "fri": [["08:30", "22:00"]],
+        "sat": [["08:30", "22:00"]],
+        "sun": [["08:30", "22:00"]],
+        "osm": "Mo-Su 08:30-22:00"
+      }
+    },
+    {
+      "osm_id": "node/4658255590",
+      "name": "Red Hat Aunty Char Koay Teow Lorong Selamat",
+      "lat": 5.4169604,
+      "lng": 100.3247412,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 2,
+      "avg_rating": 3.4,
+      "review_count": 1200,
+      "dietary": [],
+      "opening_hours": {
+        "wed": [["11:30", "18:00"]],
+        "thu": [["11:30", "18:00"]],
+        "fri": [["11:30", "18:00"]],
+        "sat": [["11:30", "18:00"]],
+        "sun": [["11:30", "18:00"]],
+        "mon": [["11:30", "18:00"]],
+        "osm": "We-Mo 11:30-18:00"
+      }
+    },
+    {
+      "osm_id": "node/5365430330",
+      "name": "Tho Yuen Dim Sum",
+      "lat": 5.4179771,
+      "lng": 100.3337365,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 2,
+      "avg_rating": 4.2,
+      "review_count": 1350,
+      "dietary": [],
+      "opening_hours": {
+        "wed": [["06:00", "15:00"]],
+        "thu": [["06:00", "15:00"]],
+        "fri": [["06:00", "15:00"]],
+        "sat": [["06:00", "15:00"]],
+        "sun": [["06:00", "15:00"]],
+        "mon": [["06:00", "15:00"]],
+        "osm": "We-Mo 06:00-15:00"
+      }
+    },
+    {
+      "osm_id": "node/4511143489",
+      "name": "Hot Bowl White Curry Mee",
+      "lat": 5.4179699,
+      "lng": 100.3244784,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.4,
+      "review_count": 92,
+      "dietary": [],
+      "opening_hours": {
+        "tue": [["08:30", "14:30"]],
+        "wed": [["08:30", "14:30"]],
+        "thu": [["08:30", "14:30"]],
+        "fri": [["08:30", "14:30"]],
+        "sat": [["08:30", "14:30"]],
+        "sun": [["08:30", "14:30"]],
+        "osm": "Tu-Su 08:30-14:30"
+      }
+    },
+    {
+      "osm_id": "node/6920077785",
+      "name": "Sister Yao's Char Koay Kak",
+      "lat": 5.4169826,
+      "lng": 100.3290335,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.6,
+      "review_count": 48,
+      "dietary": [],
+      "opening_hours": {
+        "fri": [["07:00", "12:00"]],
+        "sat": [["07:00", "12:00"]],
+        "sun": [["07:00", "12:00"]],
+        "mon": [["07:00", "12:00"]],
+        "tue": [["07:00", "12:00"]],
+        "osm": "Fr-Tu 07:00-12:00"
+      }
+    },
+    {
+      "osm_id": "node/10983543205",
+      "name": "Tok Tok Mee Bamboo Noodles",
+      "lat": 5.4171896,
+      "lng": 100.3352736,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.5,
+      "review_count": 37,
+      "dietary": [],
+      "opening_hours": {
+        "fri": [["09:30", "19:30"]],
+        "sat": [["09:30", "19:30"]],
+        "sun": [["09:30", "19:30"]],
+        "mon": [["09:30", "19:30"]],
+        "tue": [["09:30", "19:30"]],
+        "wed": [["09:30", "19:30"]],
+        "osm": "Fr-We 09:30-19:30"
+      }
+    },
+    {
+      "osm_id": "node/12760112003",
+      "name": "Restoran Nasi Dalcha Kassim Mustafa",
+      "lat": 5.415738,
+      "lng": 100.3394131,
+      "cuisine": "mamak",
+      "area": "George Town",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4.4,
+      "review_count": 64,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["06:00", "13:00"]],
+        "tue": [["06:00", "13:00"]],
+        "wed": [["06:00", "13:00"]],
+        "thu": [["06:00", "13:00"]],
+        "fri": [["06:00", "13:00"]],
+        "sat": [["06:00", "13:00"]],
+        "sun": [["06:00", "13:00"]]
+      }
+    },
+    {
+      "osm_id": "node/9985396776",
+      "name": "Ali Nasi Lemak Daun Pisang",
+      "lat": 5.4177625,
+      "lng": 100.3428092,
+      "cuisine": "malay",
+      "area": "George Town",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4.5,
+      "review_count": 1650,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["07:00", "14:00"]],
+        "tue": [["07:00", "14:00"]],
+        "wed": [["07:00", "14:00"]],
+        "thu": [["07:00", "14:00"]],
+        "fri": [["07:00", "14:00"]],
+        "sat": [["07:00", "14:00"]],
+        "osm": "Mo-Sa 07:00-14:00; Su off"
+      }
+    },
+    {
+      "osm_id": "node/5203695723",
+      "name": "Ali Bubur Kacang (Mung Bean Sweet Porridge)",
+      "lat": 5.4174483,
+      "lng": 100.3390331,
+      "cuisine": "dessert",
+      "area": "George Town",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4.7,
+      "review_count": 29,
+      "dietary": ["vegetarian", "vegan"],
+      "opening_hours": {
+        "sat": [["10:00", "18:00"]],
+        "sun": [["10:00", "18:00"]],
+        "mon": [["10:00", "18:00"]],
+        "tue": [["10:00", "18:00"]],
+        "wed": [["10:00", "18:00"]],
+        "thu": [["10:00", "18:00"]],
+        "osm": "Sa-Th 10:00-18:00"
+      }
+    },
+    {
+      "osm_id": "node/4280807609",
+      "name": "Kareem Pasembor Rojak",
+      "lat": 5.4187339,
+      "lng": 100.3429317,
+      "cuisine": "mamak",
+      "area": "George Town",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4.1,
+      "review_count": 78,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["11:00", "19:00"]],
+        "tue": [["11:00", "19:00"]],
+        "wed": [["11:00", "19:00"]],
+        "thu": [["11:00", "19:00"]],
+        "fri": [["11:00", "19:00"]],
+        "sat": [["11:00", "19:00"]],
+        "sun": [["11:00", "19:00"]]
+      }
+    },
+    {
+      "osm_id": "node/5792039753",
+      "name": "Lemon Grass (Thai Food)",
+      "lat": 5.4179571,
+      "lng": 100.3361914,
+      "cuisine": "thai",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 2,
+      "avg_rating": 3.9,
+      "review_count": 210,
+      "dietary": [],
+      "opening_hours": {
+        "tue": [["11:00", "22:00"]],
+        "wed": [["11:00", "22:00"]],
+        "thu": [["11:00", "22:00"]],
+        "fri": [["11:00", "22:00"]],
+        "sat": [["11:00", "22:00"]],
+        "sun": [["11:00", "22:00"]],
+        "osm": "Tu-Su 00:00-24:00"
+      }
+    },
+    {
+      "osm_id": "node/6158370188",
+      "name": "Big Bowl Ramen",
+      "lat": 5.415372,
+      "lng": 100.3375675,
+      "cuisine": "japanese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 3,
+      "avg_rating": 3.6,
+      "review_count": 340,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["11:00", "22:00"]],
+        "tue": [["11:00", "22:00"]],
+        "wed": [["11:00", "22:00"]],
+        "thu": [["11:00", "22:00"]],
+        "fri": [["11:00", "22:00"]],
+        "sat": [["11:00", "22:00"]],
+        "sun": [["11:00", "22:00"]],
+        "osm": "Mo-Su 11:00-22:00"
+      }
+    },
+    {
+      "osm_id": "node/4967940623",
+      "name": "VR Pinxin Vegan",
+      "lat": 5.4101872,
+      "lng": 100.3301833,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 2,
+      "avg_rating": 4.6,
+      "review_count": 95,
+      "dietary": ["vegetarian", "vegan"],
+      "opening_hours": {
+        "mon": [["11:00", "22:00"]],
+        "tue": [["11:00", "22:00"]],
+        "wed": [["11:00", "22:00"]],
+        "thu": [["11:00", "22:00"]],
+        "fri": [["11:00", "22:00"]],
+        "sat": [["11:00", "22:00"]],
+        "sun": [["11:00", "22:00"]],
+        "osm": "Mo-Su 11:00-22:00"
+      }
+    },
+    {
+      "osm_id": "node/3876050962",
+      "name": "The Mugshot Cafe",
+      "lat": 5.4183378,
+      "lng": 100.3365193,
+      "cuisine": "cafe",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 2,
+      "avg_rating": 4.4,
+      "review_count": 1100,
+      "dietary": ["vegetarian"],
+      "opening_hours": {
+        "mon": [["08:00", "18:00"]],
+        "tue": [["08:00", "18:00"]],
+        "wed": [["08:00", "18:00"]],
+        "thu": [["08:00", "18:00"]],
+        "fri": [["08:00", "18:00"]],
+        "sat": [["08:00", "18:00"]],
+        "sun": [["08:00", "18:00"]],
+        "osm": "Mo-Su 08:00-18:00"
+      }
+    },
+    {
+      "osm_id": "node/10220702817",
+      "name": "Chulia Street Night Hawker Stalls",
+      "lat": 5.418224,
+      "lng": 100.336404,
+      "cuisine": "hawker",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.1,
+      "review_count": 2600,
+      "dietary": [],
+      "opening_hours": {
+        "tue": [["18:00", "23:59"]],
+        "wed": [["18:00", "23:59"]],
+        "thu": [["18:00", "23:59"]],
+        "fri": [["18:00", "23:59"]],
+        "sat": [["18:00", "23:59"]],
+        "sun": [["18:00", "23:59"]],
+        "osm": "Tu-Su 18:00-00:00"
+      }
+    },
+    {
+      "osm_id": "way/264411520",
+      "name": "Night Food Court Red Garden",
+      "lat": 5.4211917,
+      "lng": 100.3344135,
+      "cuisine": "hawker",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 2,
+      "avg_rating": 3.8,
+      "review_count": 1900,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["17:00", "23:59"]],
+        "tue": [["17:00", "23:59"]],
+        "wed": [["17:00", "23:59"]],
+        "thu": [["17:00", "23:59"]],
+        "fri": [["17:00", "23:59"]],
+        "sat": [["17:00", "23:59"]],
+        "sun": [["17:00", "23:59"]]
+      }
+    },
+    {
+      "osm_id": "node/7576970660",
+      "name": "Presgrave Street Hawker Centre",
+      "lat": 5.4111877,
+      "lng": 100.3305394,
+      "cuisine": "hawker",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.2,
+      "review_count": 310,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["16:00", "22:00"]],
+        "tue": [["16:00", "22:00"]],
+        "wed": [["16:00", "22:00"]],
+        "thu": [["16:00", "22:00"]],
+        "fri": [["16:00", "22:00"]],
+        "sat": [["16:00", "22:00"]],
+        "sun": [["16:00", "22:00"]]
+      }
+    },
+    {
+      "osm_id": "node/13772992101",
+      "name": "Muscle Man Char Koay Kak",
+      "lat": 5.4111701,
+      "lng": 100.3304713,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.5,
+      "review_count": 71,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["15:30", "20:30"]],
+        "tue": [["15:30", "20:30"]],
+        "wed": [["15:30", "20:30"]],
+        "fri": [["15:30", "20:30"]],
+        "sat": [["15:30", "20:30"]],
+        "osm": "Mo-We, Fr-Sa 15:30-20:30"
+      }
+    },
+    {
+      "osm_id": "node/7236269489",
+      "name": "888 Hokkien Mee",
+      "lat": 5.4110973,
+      "lng": 100.3306371,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.3,
+      "review_count": 1450,
+      "dietary": [],
+      "opening_hours": {
+        "fri": [["15:00", "21:30"]],
+        "sat": [["15:00", "21:30"]],
+        "sun": [["15:00", "21:30"]],
+        "mon": [["15:00", "21:30"]],
+        "tue": [["15:00", "21:30"]],
+        "wed": [["15:00", "21:30"]],
+        "osm": "Fr-We 15:00-21:30"
+      }
+    },
+    {
+      "osm_id": "way/1078569926",
+      "name": "China House",
+      "lat": 5.4143664,
+      "lng": 100.3390428,
+      "cuisine": "cafe",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 3,
+      "avg_rating": 4.1,
+      "review_count": 1700,
+      "dietary": ["vegetarian"],
+      "opening_hours": {
+        "mon": [["09:00", "23:59"]],
+        "tue": [["09:00", "23:59"]],
+        "wed": [["09:00", "23:59"]],
+        "thu": [["09:00", "23:59"]],
+        "fri": [["09:00", "23:59"]],
+        "sat": [["09:00", "23:59"]],
+        "sun": [["09:00", "23:59"]],
+        "osm": "Mo-Su 09:00-01:00"
+      }
+    },
+    {
+      "osm_id": "node/2582001126",
+      "name": "Kedai Kopi Seng Thor",
+      "lat": 5.4153112,
+      "lng": 100.3347163,
+      "cuisine": "chinese",
+      "area": "George Town",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 3.3,
+      "review_count": 150,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["07:00", "15:00"]],
+        "tue": [["07:00", "15:00"]],
+        "wed": [["07:00", "15:00"]],
+        "thu": [["07:00", "15:00"]],
+        "fri": [["07:00", "15:00"]],
+        "sat": [["07:00", "15:00"]],
+        "sun": [["07:00", "15:00"]]
+      }
+    },
+    {
+      "osm_id": "way/156926499",
+      "name": "Pusat Penjaja Anjung Gurney",
+      "lat": 5.4398178,
+      "lng": 100.3090147,
+      "cuisine": "malay",
+      "area": "Gurney",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4,
+      "review_count": 2200,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["17:00", "23:59"]],
+        "tue": [["17:00", "23:59"]],
+        "wed": [["17:00", "23:59"]],
+        "thu": [["17:00", "23:59"]],
+        "fri": [["17:00", "23:59"]],
+        "sat": [["17:00", "23:59"]],
+        "sun": [["17:00", "23:59"]]
+      }
+    },
+    {
+      "osm_id": "node/13603027601",
+      "name": "Bali Hai Seafood Market",
+      "lat": 5.4338359,
+      "lng": 100.315377,
+      "cuisine": "seafood",
+      "area": "Gurney",
+      "is_halal": false,
+      "price_level": 4,
+      "avg_rating": 4.2,
+      "review_count": 1300,
+      "dietary": [],
+      "opening_hours": {
+        "tue": [
+          ["08:00", "14:30"],
+          ["16:00", "23:59"]
+        ],
+        "wed": [
+          ["08:00", "14:30"],
+          ["16:00", "23:59"]
+        ],
+        "thu": [
+          ["08:00", "14:30"],
+          ["16:00", "23:59"]
+        ],
+        "fri": [
+          ["08:00", "14:30"],
+          ["16:00", "23:59"]
+        ],
+        "sat": [
+          ["08:00", "14:30"],
+          ["16:00", "23:59"]
+        ],
+        "sun": [
+          ["08:00", "14:30"],
+          ["16:00", "23:59"]
+        ],
+        "osm": "Mo 16:00-00:00; Tu-Su 08:00-14:30, 16:00-00:00"
+      }
+    },
+    {
+      "osm_id": "node/5570199808",
+      "name": "栄寿司",
+      "lat": 5.4371742,
+      "lng": 100.309818,
+      "cuisine": "japanese",
+      "area": "Gurney",
+      "is_halal": false,
+      "price_level": 4,
+      "avg_rating": 3.2,
+      "review_count": 40,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["11:30", "22:00"]],
+        "tue": [["11:30", "22:00"]],
+        "wed": [["11:30", "22:00"]],
+        "thu": [["11:30", "22:00"]],
+        "fri": [["11:30", "22:00"]],
+        "sat": [["11:30", "22:00"]],
+        "sun": [["11:30", "22:00"]]
+      }
+    },
+    {
+      "osm_id": "node/6434076185",
+      "name": "Pulau Tikus Wantan Mee House",
+      "lat": 5.4305322,
+      "lng": 100.3126068,
+      "cuisine": "chinese",
+      "area": "Pulau Tikus",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.4,
+      "review_count": 88,
+      "dietary": [],
+      "opening_hours": {
+        "fri": [["06:00", "16:00"]],
+        "sat": [["06:00", "16:00"]],
+        "sun": [["06:00", "16:00"]],
+        "mon": [["06:00", "16:00"]],
+        "tue": [["06:00", "16:00"]],
+        "wed": [["06:00", "16:00"]],
+        "osm": "Fr-We 06:00-16:00"
+      }
+    },
+    {
+      "osm_id": "node/7236256785",
+      "name": "New Cathay Curry & Hokkien Mee",
+      "lat": 5.4323386,
+      "lng": 100.3095278,
+      "cuisine": "chinese",
+      "area": "Pulau Tikus",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.3,
+      "review_count": 340,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["07:00", "13:00"]],
+        "tue": [["07:00", "13:00"]],
+        "wed": [["07:00", "13:00"]],
+        "thu": [["07:00", "13:00"]],
+        "fri": [["07:00", "13:00"]],
+        "sat": [["07:00", "13:00"]],
+        "sun": [["07:00", "13:00"]]
+      }
+    },
+    {
+      "osm_id": "node/6138481785",
+      "name": "Li Er Nyonya Cafe",
+      "lat": 5.4310088,
+      "lng": 100.3122324,
+      "cuisine": "nyonya",
+      "area": "Pulau Tikus",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.5,
+      "review_count": 34,
+      "dietary": [],
+      "opening_hours": {
+        "fri": [["07:30", "16:30"]],
+        "sat": [["07:30", "16:30"]],
+        "sun": [["07:30", "16:30"]],
+        "mon": [["07:30", "16:30"]],
+        "tue": [["07:30", "16:30"]],
+        "wed": [["07:30", "16:30"]],
+        "osm": "Fr-We 07:30-16:30"
+      }
+    },
+    {
+      "osm_id": "node/13603020602",
+      "name": "Wan Dao Tou Assam Laksa",
+      "lat": 5.4335023,
+      "lng": 100.3029979,
+      "cuisine": "chinese",
+      "area": "Pulau Tikus",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.6,
+      "review_count": 980,
+      "dietary": [],
+      "opening_hours": {
+        "tue": [["11:00", "17:00"]],
+        "wed": [["11:00", "17:00"]],
+        "thu": [["11:00", "17:00"]],
+        "fri": [["11:00", "17:00"]],
+        "sat": [["11:00", "17:00"]],
+        "sun": [["11:00", "17:00"]],
+        "osm": "Tu-Su 11:00-17:00"
+      }
+    },
+    {
+      "osm_id": "node/5801112055",
+      "name": "Blue Chang Modern Thai Cuisine",
+      "lat": 5.4317804,
+      "lng": 100.3104164,
+      "cuisine": "thai",
+      "area": "Pulau Tikus",
+      "is_halal": false,
+      "price_level": 3,
+      "avg_rating": 4.1,
+      "review_count": 260,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [
+          ["12:00", "14:30"],
+          ["18:00", "22:30"]
+        ],
+        "tue": [
+          ["12:00", "14:30"],
+          ["18:00", "22:30"]
+        ],
+        "wed": [
+          ["12:00", "14:30"],
+          ["18:00", "22:30"]
+        ],
+        "thu": [
+          ["12:00", "14:30"],
+          ["18:00", "22:30"]
+        ],
+        "fri": [
+          ["12:00", "14:30"],
+          ["18:00", "22:30"]
+        ],
+        "sat": [
+          ["12:00", "14:30"],
+          ["18:00", "22:30"]
+        ],
+        "osm": "Mo-Sa 12:00-14:30, 18:00-22:30"
+      }
+    },
+    {
+      "osm_id": "node/9999507853",
+      "name": "VL Western House",
+      "lat": 5.4311375,
+      "lng": 100.3104438,
+      "cuisine": "western",
+      "area": "Pulau Tikus",
+      "is_halal": true,
+      "price_level": 2,
+      "avg_rating": 3.4,
+      "review_count": 60,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["10:00", "22:00"]],
+        "tue": [["10:00", "22:00"]],
+        "wed": [["10:00", "22:00"]],
+        "thu": [["10:00", "22:00"]],
+        "fri": [["10:00", "22:00"]],
+        "sat": [["10:00", "22:00"]],
+        "sun": [["10:00", "22:00"]],
+        "osm": "Mo-Su 10:00-22:00"
+      }
+    },
+    {
+      "osm_id": "node/4210860394",
+      "name": "Ali Amier Nasi Kandar",
+      "lat": 5.3900671,
+      "lng": 100.3131965,
+      "cuisine": "nasi kandar",
+      "area": "Jelutong",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4.4,
+      "review_count": 97,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["07:00", "22:00"]],
+        "tue": [["07:00", "22:00"]],
+        "wed": [["07:00", "22:00"]],
+        "thu": [["07:00", "22:00"]],
+        "fri": [["07:00", "22:00"]],
+        "sat": [["07:00", "22:00"]],
+        "sun": [["07:00", "22:00"]]
+      }
+    },
+    {
+      "osm_id": "node/4210852592",
+      "name": "Restoran Deen",
+      "lat": 5.3879562,
+      "lng": 100.312566,
+      "cuisine": "mamak",
+      "area": "Jelutong",
+      "is_halal": true,
+      "price_level": 2,
+      "avg_rating": 4.5,
+      "review_count": 2700,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["11:00", "22:00"]],
+        "tue": [["11:00", "22:00"]],
+        "wed": [["11:00", "22:00"]],
+        "thu": [["11:00", "22:00"]],
+        "fri": [["11:00", "22:00"]],
+        "sat": [["11:00", "22:00"]],
+        "sun": [["11:00", "22:00"]]
+      }
+    },
+    {
+      "osm_id": "node/4572721390",
+      "name": "Rasheed Mee Goreng",
+      "lat": 5.3873194,
+      "lng": 100.3122466,
+      "cuisine": "mamak",
+      "area": "Jelutong",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4.3,
+      "review_count": 42,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["15:00", "22:00"]],
+        "tue": [["15:00", "22:00"]],
+        "wed": [["15:00", "22:00"]],
+        "thu": [["15:00", "22:00"]],
+        "fri": [["15:00", "22:00"]],
+        "sat": [["15:00", "22:00"]],
+        "sun": [["15:00", "22:00"]]
+      }
+    },
+    {
+      "osm_id": "node/7248028185",
+      "name": "Soon Lai Seafood",
+      "lat": 5.3870075,
+      "lng": 100.3061765,
+      "cuisine": "seafood",
+      "area": "Jelutong",
+      "is_halal": false,
+      "price_level": 3,
+      "avg_rating": 3.9,
+      "review_count": 180,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [
+          ["11:00", "14:30"],
+          ["17:30", "22:30"]
+        ],
+        "tue": [
+          ["11:00", "14:30"],
+          ["17:30", "22:30"]
+        ],
+        "wed": [
+          ["11:00", "14:30"],
+          ["17:30", "22:30"]
+        ],
+        "thu": [
+          ["11:00", "14:30"],
+          ["17:30", "22:30"]
+        ],
+        "fri": [
+          ["11:00", "14:30"],
+          ["17:30", "22:30"]
+        ],
+        "sat": [
+          ["11:00", "14:30"],
+          ["17:30", "22:30"]
+        ],
+        "sun": [
+          ["11:00", "14:30"],
+          ["17:30", "22:30"]
+        ],
+        "osm": "Mo-Su 11:00-14:30, 17:30-22:30"
+      }
+    },
+    {
+      "osm_id": "node/12452366901",
+      "name": "三点三 Meet",
+      "lat": 5.3928459,
+      "lng": 100.3049308,
+      "cuisine": "chinese",
+      "area": "Jelutong",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 3.4,
+      "review_count": 22,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["07:00", "14:00"]],
+        "tue": [["07:00", "14:00"]],
+        "wed": [["07:00", "14:00"]],
+        "thu": [["07:00", "14:00"]],
+        "fri": [["07:00", "14:00"]],
+        "sat": [["07:00", "14:00"]],
+        "sun": [["07:00", "14:00"]],
+        "osm": "Mo-Su 07:00-14:00"
+      }
+    },
+    {
+      "osm_id": "node/4920025022",
+      "name": "Sister's Curry Mee",
+      "lat": 5.400357,
+      "lng": 100.2782872,
+      "cuisine": "chinese",
+      "area": "Air Itam",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.5,
+      "review_count": 1250,
+      "dietary": [],
+      "opening_hours": {
+        "wed": [["07:30", "13:00"]],
+        "thu": [["07:30", "13:00"]],
+        "fri": [["07:30", "13:00"]],
+        "sat": [["07:30", "13:00"]],
+        "sun": [["07:30", "13:00"]],
+        "mon": [["07:30", "13:00"]],
+        "osm": "We-Mo 07:30-13:00"
+      }
+    },
+    {
+      "osm_id": "node/1610799563",
+      "name": "Nasi Kandar Bintang",
+      "lat": 5.4052098,
+      "lng": 100.2837153,
+      "cuisine": "nasi kandar",
+      "area": "Air Itam",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4,
+      "review_count": 63,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["07:00", "23:00"]],
+        "tue": [["07:00", "23:00"]],
+        "wed": [["07:00", "23:00"]],
+        "thu": [["07:00", "23:00"]],
+        "fri": [["07:00", "23:00"]],
+        "sat": [["07:00", "23:00"]],
+        "sun": [["07:00", "23:00"]]
+      }
+    },
+    {
+      "osm_id": "node/9720856005",
+      "name": "Hee Lok Kopitiam",
+      "lat": 5.4000092,
+      "lng": 100.2779187,
+      "cuisine": "chinese",
+      "area": "Air Itam",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 3.9,
+      "review_count": 75,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["06:30", "14:00"]],
+        "tue": [["06:30", "14:00"]],
+        "wed": [["06:30", "14:00"]],
+        "thu": [["06:30", "14:00"]],
+        "fri": [["06:30", "14:00"]],
+        "sat": [["06:30", "14:00"]],
+        "sun": [["06:30", "14:00"]]
+      }
+    },
+    {
+      "osm_id": "way/1031081042",
+      "name": "G26 Kafe Siswa",
+      "lat": 5.3574488,
+      "lng": 100.3024965,
+      "cuisine": "malay",
+      "area": "Gelugor",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 3.6,
+      "review_count": 140,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["07:30", "17:00"]],
+        "tue": [["07:30", "17:00"]],
+        "wed": [["07:30", "17:00"]],
+        "thu": [["07:30", "17:00"]],
+        "fri": [["07:30", "17:00"]]
+      }
+    },
+    {
+      "osm_id": "node/1524404616",
+      "name": "Subaidah Bistro",
+      "lat": 5.3566944,
+      "lng": 100.3042828,
+      "cuisine": "mamak",
+      "area": "Gelugor",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4,
+      "review_count": 380,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["07:00", "23:59"]],
+        "tue": [["07:00", "23:59"]],
+        "wed": [["07:00", "23:59"]],
+        "thu": [["07:00", "23:59"]],
+        "fri": [["07:00", "23:59"]],
+        "sat": [["07:00", "23:59"]],
+        "sun": [["07:00", "23:59"]]
+      }
+    },
+    {
+      "osm_id": "node/10235391594",
+      "name": "He and She Coffee",
+      "lat": 5.3574017,
+      "lng": 100.302544,
+      "cuisine": "cafe",
+      "area": "Gelugor",
+      "is_halal": true,
+      "price_level": 2,
+      "avg_rating": 4.6,
+      "review_count": 81,
+      "dietary": ["vegetarian"],
+      "opening_hours": {
+        "mon": [["10:30", "20:00"]],
+        "tue": [["10:30", "20:00"]],
+        "wed": [["10:30", "20:00"]],
+        "thu": [["10:30", "20:00"]],
+        "fri": [["10:30", "20:00"]],
+        "sat": [["10:30", "18:30"]],
+        "sun": [["10:30", "18:30"]],
+        "osm": "Mo-Fr 10:30-20:00; Sa-Su 10:30-18:30"
+      }
+    },
+    {
+      "osm_id": "node/9153590637",
+      "name": "Bumble Dee's @ 1938",
+      "lat": 5.3620665,
+      "lng": 100.3069508,
+      "cuisine": "western",
+      "area": "Gelugor",
+      "is_halal": true,
+      "price_level": 2,
+      "avg_rating": 4.4,
+      "review_count": 99,
+      "dietary": [],
+      "opening_hours": {
+        "tue": [["11:00", "21:00"]],
+        "wed": [["11:00", "21:00"]],
+        "thu": [["11:00", "21:00"]],
+        "fri": [["11:00", "21:00"]],
+        "sat": [["11:00", "21:00"]],
+        "sun": [["11:00", "21:00"]]
+      }
+    },
+    {
+      "osm_id": "node/5657603119",
+      "name": "Maxim Dim Sum Pekaka",
+      "lat": 5.3491135,
+      "lng": 100.2949585,
+      "cuisine": "chinese",
+      "area": "Gelugor",
+      "is_halal": false,
+      "price_level": 2,
+      "avg_rating": 4.3,
+      "review_count": 1100,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [
+          ["06:30", "14:30"],
+          ["17:30", "21:00"]
+        ],
+        "tue": [
+          ["06:30", "14:30"],
+          ["17:30", "21:00"]
+        ],
+        "wed": [
+          ["06:30", "14:30"],
+          ["17:30", "21:00"]
+        ],
+        "thu": [
+          ["06:30", "14:30"],
+          ["17:30", "21:00"]
+        ],
+        "fri": [
+          ["06:30", "14:30"],
+          ["17:30", "21:00"]
+        ],
+        "sat": [
+          ["06:30", "14:30"],
+          ["17:30", "21:00"]
+        ],
+        "sun": [
+          ["06:30", "14:30"],
+          ["17:30", "21:00"]
+        ],
+        "osm": "06:30-14:30, 17:30-21:00"
+      }
+    },
+    {
+      "osm_id": "node/2158621802",
+      "name": "Nasi Kandar Zubaidah - Sungai Dua",
+      "lat": 5.3495588,
+      "lng": 100.2959826,
+      "cuisine": "nasi kandar",
+      "area": "Gelugor",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4.1,
+      "review_count": 760,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["00:00", "23:59"]],
+        "tue": [["00:00", "23:59"]],
+        "wed": [["00:00", "23:59"]],
+        "thu": [["00:00", "23:59"]],
+        "fri": [["00:00", "23:59"]],
+        "sat": [["00:00", "23:59"]],
+        "sun": [["00:00", "23:59"]],
+        "osm": "24/7"
+      }
+    },
+    {
+      "osm_id": "node/13533351901",
+      "name": "MuTaiZi Cafe",
+      "lat": 5.3376188,
+      "lng": 100.2981028,
+      "cuisine": "chinese",
+      "area": "Bayan Lepas",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.4,
+      "review_count": 45,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["07:00", "21:00"]],
+        "tue": [["07:00", "21:00"]],
+        "wed": [["07:00", "21:00"]],
+        "thu": [["07:00", "21:00"]],
+        "fri": [["07:00", "21:00"]],
+        "sat": [["07:00", "21:00"]],
+        "sun": [["07:00", "21:00"]],
+        "osm": "Mo-Su 07:00-21:00"
+      }
+    },
+    {
+      "osm_id": "node/2158757333",
+      "name": "Nasi Kandar Kayu",
+      "lat": 5.3366803,
+      "lng": 100.293026,
+      "cuisine": "nasi kandar",
+      "area": "Bayan Lepas",
+      "is_halal": true,
+      "price_level": 1,
+      "avg_rating": 4,
+      "review_count": 1600,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["00:00", "23:59"]],
+        "tue": [["00:00", "23:59"]],
+        "wed": [["00:00", "23:59"]],
+        "thu": [["00:00", "23:59"]],
+        "fri": [["00:00", "23:59"]],
+        "sat": [["00:00", "23:59"]],
+        "sun": [["00:00", "23:59"]],
+        "osm": "24/7"
+      }
+    },
+    {
+      "osm_id": "node/9572707456",
+      "name": "Chia Yean Cafe",
+      "lat": 5.3420514,
+      "lng": 100.3011652,
+      "cuisine": "chinese",
+      "area": "Bayan Lepas",
+      "is_halal": false,
+      "price_level": 1,
+      "avg_rating": 4.2,
+      "review_count": 260,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["06:30", "14:00"]],
+        "tue": [["06:30", "14:00"]],
+        "wed": [["06:30", "14:00"]],
+        "thu": [["06:30", "14:00"]],
+        "fri": [["06:30", "14:00"]],
+        "sat": [["06:30", "14:00"]],
+        "sun": [["06:30", "14:00"]]
+      }
+    },
+    {
+      "osm_id": "node/10698603736",
+      "name": "Senzushi",
+      "lat": 5.3303797,
+      "lng": 100.2755258,
+      "cuisine": "japanese",
+      "area": "Bayan Lepas",
+      "is_halal": false,
+      "price_level": 3,
+      "avg_rating": 4.1,
+      "review_count": 330,
+      "dietary": [],
+      "opening_hours": {
+        "mon": [["11:30", "20:30"]],
+        "tue": [["11:30", "20:30"]],
+        "wed": [["11:30", "20:30"]],
+        "thu": [["11:30", "20:30"]],
+        "fri": [["11:30", "20:30"]],
+        "sat": [["11:30", "20:30"]],
+        "sun": [["11:30", "20:30"]],
+        "osm": "Mo-Su 11:30-20:30"
+      }
+    }
+  ]
+}
