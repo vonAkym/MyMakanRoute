@@ -32,10 +32,12 @@ function nearestNeighbourOrder(matrix, start = 0) {
   return { order, totalTime: orderTime(matrix, order) };
 }
 
-function bruteForceOrder(matrix, start = 0) {
+// maxStops: safety limit. The API keeps the default (8); the feasibility script raises it
+// to 10 (9! = 362,880 orders, a few seconds at most) to measure ACO against the optimum.
+function bruteForceOrder(matrix, start = 0, maxStops = BRUTE_FORCE_MAX_STOPS) {
   const n = matrix.length;
-  if (n > BRUTE_FORCE_MAX_STOPS) {
-    throw new Error(`Brute force is limited to ${BRUTE_FORCE_MAX_STOPS} stops`);
+  if (n > maxStops) {
+    throw new Error(`Brute force is limited to ${maxStops} stops`);
   }
   const order = [start];
   const used = new Uint8Array(n);

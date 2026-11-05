@@ -40,7 +40,13 @@ const DEFAULT_ACO = Object.freeze({
   trailMinRatio: 0.2, // lowest allowed pheromone, as a share of the highest (see step 4)
   stagnationLimit: 100, // stop early after this many rounds without a better order
   seed: 42,
+  elitist: true, // extra pheromone for the best order so far (see step 3)
+  trailLimits: true, // keep pheromone between tauMin and tauMax (see step 4)
 });
+
+// The plain "textbook" Ant System (Dorigo et al., 1996) for comparison in the feasibility
+// study: beta 3, no elitist deposit and no trail limits. Everything else as DEFAULT_ACO.
+const TEXTBOOK_ACO = Object.freeze({ beta: 3, elitist: false, trailLimits: false });
 
 // Default number of ants: twice the number of stops, at least 10.
 const defaultAnts = (n) => Math.max(10, 2 * n);
@@ -147,7 +153,10 @@ function planVisitingOrderACO(timeMatrix, options = {}) {
     //    Each ant adds q / L on every move i -> j of its order, so shorter orders add more.
     //    Moves are directed (i -> j), because driving times can differ by direction.
     //    The extra best-so-far deposit helps the colony converge without losing good orders.
-    for (const { order, time } of [...antOrders, { order: bestOrder, time: bestTime }]) {
+    const depositors = params.elitist
+      ? [...antOrders, { order: bestOrder, time: bestTime }]
+      : antOrders;
+    for (const { order, time } of depositors) {
       const amount = params.q / Math.max(time, 1);
       for (let k = 1; k < order.length; k++) pheromone[order[k - 1]][order[k]] += amount;
     }
@@ -156,11 +165,14 @@ function planVisitingOrderACO(timeMatrix, options = {}) {
     //    every move keeps a small chance of being tried and the colony does not get stuck
     //    on the first good order it finds. tauMax is the level a move would reach if every
     //    ant used it in every round; tauMin is a small fraction of that.
-    const tauMax = ((params.ants + 1) * params.q) / (params.evaporation * Math.max(bestTime, 1));
-    const tauMin = tauMax * params.trailMinRatio;
-    for (let i = 0; i < n; i++) {
-      for (let j = 0; j < n; j++) {
-        pheromone[i][j] = Math.min(tauMax, Math.max(tauMin, pheromone[i][j]));
+    //    Switched off (trailLimits: false) in the textbook version.
+    if (params.trailLimits) {
+      const tauMax = ((params.ants + 1) * params.q) / (params.evaporation * Math.max(bestTime, 1));
+      const tauMin = tauMax * params.trailMinRatio;
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          pheromone[i][j] = Math.min(tauMax, Math.max(tauMin, pheromone[i][j]));
+        }
       }
     }
 
@@ -175,4 +187,4 @@ function stripUndefined(obj) {
   return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 }
 
-module.exports = { planVisitingOrderACO, mulberry32, DEFAULT_ACO, defaultAnts };
+module.exports = { planVisitingOrderACO, mulberry32, DEFAULT_ACO, TEXTBOOK_ACO, defaultAnts };

@@ -1,0 +1,596 @@
+{
+  "generatedAt": "2026-11-05T07:47:15.547Z",
+  "gitCommit": "22a1ee8",
+  "note": "Ratings and review counts of SAMPLE places are invented; they test the method only.",
+  "dataQuality": {
+    "bySource": [
+      {
+        "source": "osm",
+        "total": 1186,
+        "namedPercent": 100,
+        "withCuisinePercent": 45.4,
+        "withOpeningHoursPercent": 23.2,
+        "withHalalTagPercent": 2.3,
+        "withRatingPercent": 0
+      },
+      {
+        "source": "sample",
+        "total": 55,
+        "namedPercent": 100,
+        "withCuisinePercent": 100,
+        "withOpeningHoursPercent": 100,
+        "withHalalTagPercent": 100,
+        "withRatingPercent": 100
+      }
+    ],
+    "rawSnapshot": {
+      "elements": 1298,
+      "named": 1241,
+      "namedPercent": 95.6
+    }
+  },
+  "hiddenGems": {
+    "samplePlaces": 55,
+    "byArea": {
+      "George Town": 28,
+      "Jelutong": 5,
+      "Gurney": 3,
+      "Pulau Tikus": 6,
+      "Gelugor": 6,
+      "Bayan Lepas": 4,
+      "Air Itam": 3
+    },
+    "thresholds": {
+      "minRating": 4.3,
+      "maxReviews": 100,
+      "popularMinReviews": 100
+    },
+    "labelCounts": {
+      "Hidden Gem": 14,
+      "Popular": 35,
+      "No label": 6
+    },
+    "gems": [
+      {
+        "name": "Ali Bubur Kacang (Mung Bean Sweet Porridge)",
+        "area": "George Town",
+        "rating": 4.7,
+        "reviews": 29
+      },
+      {
+        "name": "Sister Yao's Char Koay Kak",
+        "area": "George Town",
+        "rating": 4.6,
+        "reviews": 48
+      },
+      {
+        "name": "He and She Coffee",
+        "area": "Gelugor",
+        "rating": 4.6,
+        "reviews": 81
+      },
+      {
+        "name": "VR Pinxin Vegan",
+        "area": "George Town",
+        "rating": 4.6,
+        "reviews": 95
+      },
+      {
+        "name": "Li Er Nyonya Cafe",
+        "area": "Pulau Tikus",
+        "rating": 4.5,
+        "reviews": 34
+      },
+      {
+        "name": "Tok Tok Mee Bamboo Noodles",
+        "area": "George Town",
+        "rating": 4.5,
+        "reviews": 37
+      },
+      {
+        "name": "Muscle Man Char Koay Kak",
+        "area": "George Town",
+        "rating": 4.5,
+        "reviews": 71
+      },
+      {
+        "name": "MuTaiZi Cafe",
+        "area": "Bayan Lepas",
+        "rating": 4.4,
+        "reviews": 45
+      },
+      {
+        "name": "Restoran Nasi Dalcha Kassim Mustafa",
+        "area": "George Town",
+        "rating": 4.4,
+        "reviews": 64
+      },
+      {
+        "name": "Pulau Tikus Wantan Mee House",
+        "area": "Pulau Tikus",
+        "rating": 4.4,
+        "reviews": 88
+      },
+      {
+        "name": "Hot Bowl White Curry Mee",
+        "area": "George Town",
+        "rating": 4.4,
+        "reviews": 92
+      },
+      {
+        "name": "Ali Amier Nasi Kandar",
+        "area": "Jelutong",
+        "rating": 4.4,
+        "reviews": 97
+      },
+      {
+        "name": "Bumble Dee's @ 1938",
+        "area": "Gelugor",
+        "rating": 4.4,
+        "reviews": 99
+      },
+      {
+        "name": "Rasheed Mee Goreng",
+        "area": "Jelutong",
+        "rating": 4.3,
+        "reviews": 42
+      }
+    ],
+    "sensitivity": [
+      {
+        "minRating": 4,
+        "counts": {
+          "50": 6,
+          "100": 16,
+          "200": 16
+        }
+      },
+      {
+        "minRating": 4.3,
+        "counts": {
+          "50": 6,
+          "100": 14,
+          "200": 14
+        }
+      },
+      {
+        "minRating": 4.5,
+        "counts": {
+          "50": 4,
+          "100": 7,
+          "200": 7
+        }
+      }
+    ]
+  },
+  "discovery": {
+    "centre": {
+      "name": "Komtar",
+      "lat": 5.4145,
+      "lng": 100.3292
+    },
+    "radiusM": 1500,
+    "all": {
+      "halal": false,
+      "count": 704,
+      "labelCounts": {
+        "Hidden Gem": 7,
+        "Popular": 19,
+        "No label": 678
+      },
+      "top5": [
+        {
+          "name": "Sister Yao's Char Koay Kak",
+          "label": "Hidden Gem",
+          "rating": 4.6,
+          "reviews": 48,
+          "distanceM": 275,
+          "isSample": true
+        },
+        {
+          "name": "Muscle Man Char Koay Kak",
+          "label": "Hidden Gem",
+          "rating": 4.5,
+          "reviews": 71,
+          "distanceM": 394,
+          "isSample": true
+        },
+        {
+          "name": "VR Pinxin Vegan",
+          "label": "Hidden Gem",
+          "rating": 4.6,
+          "reviews": 95,
+          "distanceM": 489,
+          "isSample": true
+        },
+        {
+          "name": "Hot Bowl White Curry Mee",
+          "label": "Hidden Gem",
+          "rating": 4.4,
+          "reviews": 92,
+          "distanceM": 649,
+          "isSample": true
+        },
+        {
+          "name": "Tok Tok Mee Bamboo Noodles",
+          "label": "Hidden Gem",
+          "rating": 4.5,
+          "reviews": 37,
+          "distanceM": 736,
+          "isSample": true
+        }
+      ]
+    },
+    "halalOnly": {
+      "halal": true,
+      "count": 17,
+      "labelCounts": {
+        "Hidden Gem": 2,
+        "Popular": 4,
+        "No label": 11
+      },
+      "top5": [
+        {
+          "name": "Ali Bubur Kacang (Mung Bean Sweet Porridge)",
+          "label": "Hidden Gem",
+          "rating": 4.7,
+          "reviews": 29,
+          "distanceM": 1137,
+          "isSample": true
+        },
+        {
+          "name": "Restoran Nasi Dalcha Kassim Mustafa",
+          "label": "Hidden Gem",
+          "rating": 4.4,
+          "reviews": 64,
+          "distanceM": 1140,
+          "isSample": true
+        },
+        {
+          "name": "Penang Road Famous Laksa",
+          "label": "Popular",
+          "rating": 4.1,
+          "reviews": 1500,
+          "distanceM": 322,
+          "isSample": true
+        },
+        {
+          "name": "Hameediyah Tandoori House",
+          "label": "Popular",
+          "rating": 4.5,
+          "reviews": 1980,
+          "distanceM": 594,
+          "isSample": true
+        },
+        {
+          "name": "Nasi Kandar Line Clear",
+          "label": "Popular",
+          "rating": 4.4,
+          "reviews": 2850,
+          "distanceM": 671,
+          "isSample": true
+        }
+      ]
+    }
+  },
+  "roadGraph": {
+    "source": "osm-roads",
+    "attribution": "Data © OpenStreetMap contributors, ODbL",
+    "createdAt": "2026-11-03T15:24:33.537Z",
+    "bbox": [
+      5.33,
+      100.27,
+      5.46,
+      100.345
+    ],
+    "fileSizeMB": 2.52,
+    "nodes": 26689,
+    "edges": 34732,
+    "loadMs": 201,
+    "walking": {
+      "usableNodes": 26478,
+      "mainComponentNodes": 26208,
+      "mainComponentPercentOfUsable": 99,
+      "mainComponentPercentOfAll": 98.2
+    },
+    "driving": {
+      "usableNodes": 23448,
+      "mainComponentNodes": 22918,
+      "mainComponentPercentOfUsable": 97.7,
+      "mainComponentPercentOfAll": 85.9
+    }
+  },
+  "routeBenchmark": {
+    "travelMode": "walking",
+    "areas": [
+      "George Town",
+      "Pulau Tikus",
+      "Jelutong",
+      "Gurney"
+    ],
+    "poolSize": 42,
+    "seed": 2026,
+    "trialsPerSize": 10,
+    "acoVariants": {
+      "improved": {
+        "iterations": 200,
+        "alpha": 1,
+        "beta": 2,
+        "evaporation": 0.5,
+        "q": 1,
+        "trailMinRatio": 0.2,
+        "stagnationLimit": 100,
+        "seed": 42,
+        "elitist": true,
+        "trailLimits": true
+      },
+      "textbook": {
+        "iterations": 200,
+        "alpha": 1,
+        "beta": 3,
+        "evaporation": 0.5,
+        "q": 1,
+        "trailMinRatio": 0.2,
+        "stagnationLimit": 100,
+        "seed": 42,
+        "elitist": false,
+        "trailLimits": false
+      }
+    },
+    "selection": "Per trial: a random anchor place (trip start) plus n-1 random places among the 2n nearest to it.",
+    "perSize": {
+      "4": {
+        "trials": 10,
+        "trialsWithOptimum": 10,
+        "avgMatrixMs": 5.84,
+        "avgOptimumMin": 22.5,
+        "variants": {
+          "improved": {
+            "optimalPercent": 100,
+            "avgGapPercent": 0,
+            "maxGapPercent": 0,
+            "avgMs": 1.74
+          },
+          "textbook": {
+            "optimalPercent": 100,
+            "avgGapPercent": 0,
+            "maxGapPercent": 0,
+            "avgMs": 1.69
+          }
+        },
+        "nearestNeighbour": {
+          "optimalPercent": 90,
+          "avgGapPercent": 1.04,
+          "avgMs": 0.01
+        },
+        "bruteForce": {
+          "avgMs": 0.05
+        },
+        "avgIterationsRun": {
+          "improved": 101,
+          "textbook": 101
+        }
+      },
+      "6": {
+        "trials": 10,
+        "trialsWithOptimum": 10,
+        "avgMatrixMs": 9.91,
+        "avgOptimumMin": 30.1,
+        "variants": {
+          "improved": {
+            "optimalPercent": 100,
+            "avgGapPercent": 0,
+            "maxGapPercent": 0,
+            "avgMs": 1.4
+          },
+          "textbook": {
+            "optimalPercent": 100,
+            "avgGapPercent": 0,
+            "maxGapPercent": 0,
+            "avgMs": 2.92
+          }
+        },
+        "nearestNeighbour": {
+          "optimalPercent": 70,
+          "avgGapPercent": 1.52,
+          "avgMs": 0.01
+        },
+        "bruteForce": {
+          "avgMs": 0.04
+        },
+        "avgIterationsRun": {
+          "improved": 101,
+          "textbook": 101
+        }
+      },
+      "8": {
+        "trials": 10,
+        "trialsWithOptimum": 10,
+        "avgMatrixMs": 18.43,
+        "avgOptimumMin": 50.6,
+        "variants": {
+          "improved": {
+            "optimalPercent": 100,
+            "avgGapPercent": 0,
+            "maxGapPercent": 0,
+            "avgMs": 3.16
+          },
+          "textbook": {
+            "optimalPercent": 60,
+            "avgGapPercent": 0.65,
+            "maxGapPercent": 2.67,
+            "avgMs": 5.35
+          }
+        },
+        "nearestNeighbour": {
+          "optimalPercent": 10,
+          "avgGapPercent": 9.21,
+          "avgMs": 0.01
+        },
+        "bruteForce": {
+          "avgMs": 0.13
+        },
+        "avgIterationsRun": {
+          "improved": 118,
+          "textbook": 102
+        }
+      },
+      "10": {
+        "trials": 10,
+        "trialsWithOptimum": 10,
+        "avgMatrixMs": 45.71,
+        "avgOptimumMin": 62.6,
+        "variants": {
+          "improved": {
+            "optimalPercent": 90,
+            "avgGapPercent": 0.2,
+            "maxGapPercent": 2.03,
+            "avgMs": 7.26
+          },
+          "textbook": {
+            "optimalPercent": 70,
+            "avgGapPercent": 1,
+            "maxGapPercent": 4.48,
+            "avgMs": 14.88
+          }
+        },
+        "nearestNeighbour": {
+          "optimalPercent": 20,
+          "avgGapPercent": 9.14,
+          "avgMs": 0.01
+        },
+        "bruteForce": {
+          "avgMs": 2.9
+        },
+        "avgIterationsRun": {
+          "improved": 118,
+          "textbook": 103
+        }
+      }
+    },
+    "notes": [],
+    "workedExample": {
+      "stops": [
+        {
+          "step": 1,
+          "name": "Tok Tok Mee Bamboo Noodles",
+          "area": "George Town"
+        },
+        {
+          "step": 2,
+          "name": "Tho Yuen Dim Sum",
+          "area": "George Town"
+        },
+        {
+          "step": 3,
+          "name": "Hameediyah Tandoori House",
+          "area": "George Town"
+        },
+        {
+          "step": 4,
+          "name": "Toh Soon Cafe",
+          "area": "George Town"
+        },
+        {
+          "step": 5,
+          "name": "Chulia Street Night Hawker Stalls",
+          "area": "George Town"
+        },
+        {
+          "step": 6,
+          "name": "Ali Bubur Kacang (Mung Bean Sweet Porridge)",
+          "area": "George Town"
+        }
+      ],
+      "legs": [
+        {
+          "from": "Tok Tok Mee Bamboo Noodles",
+          "to": "Tho Yuen Dim Sum",
+          "timeMin": 3.1,
+          "distanceM": 257
+        },
+        {
+          "from": "Tho Yuen Dim Sum",
+          "to": "Hameediyah Tandoori House",
+          "timeMin": 1.5,
+          "distanceM": 122
+        },
+        {
+          "from": "Hameediyah Tandoori House",
+          "to": "Toh Soon Cafe",
+          "timeMin": 1.3,
+          "distanceM": 110
+        },
+        {
+          "from": "Toh Soon Cafe",
+          "to": "Chulia Street Night Hawker Stalls",
+          "timeMin": 7.2,
+          "distanceM": 609
+        },
+        {
+          "from": "Chulia Street Night Hawker Stalls",
+          "to": "Ali Bubur Kacang (Mung Bean Sweet Porridge)",
+          "timeMin": 4.8,
+          "distanceM": 407
+        }
+      ],
+      "totalTimeMin": 17.9,
+      "totalDistanceM": 1505,
+      "optimumMin": 17.9,
+      "nearestNeighbourMin": 19.3,
+      "textbookAcoMin": 17.9
+    }
+  },
+  "analytics": {
+    "totals": {
+      "ratedPlaces": 55,
+      "hiddenGems": 14,
+      "popular": 35,
+      "unlabelled": 6,
+      "averageRating": 4.18,
+      "halalPlaces": 20,
+      "halalShare": 0.36,
+      "samplePlaces": 55
+    },
+    "labels": [
+      {
+        "label": "Hidden Gem",
+        "count": 14
+      },
+      {
+        "label": "Popular",
+        "count": 35
+      },
+      {
+        "label": "No label",
+        "count": 6
+      }
+    ],
+    "topAreas": [
+      {
+        "name": "George Town",
+        "places": 28,
+        "averageRating": 4.23
+      },
+      {
+        "name": "Pulau Tikus",
+        "places": 6,
+        "averageRating": 4.22
+      },
+      {
+        "name": "Bayan Lepas",
+        "places": 4,
+        "averageRating": 4.18
+      }
+    ],
+    "findings": [
+      "George Town has the highest average rating (4.2) among areas with at least 3 rated places.",
+      "\"cafe\" is the best rated cuisine (4.4) among cuisines with at least 3 rated places.",
+      "14 of 55 rated places (25%) are Hidden Gems: rated 4.3 or higher with 100 reviews or fewer.",
+      "Hidden Gems average 4.5 stars from about 66 reviews each, while Popular places average 4.2 stars from about 1226 reviews.",
+      "36% of rated places (20 of 55) are marked halal."
+    ],
+    "note": "Ratings for sample places are invented for testing."
+  },
+  "runtimeSeconds": 2.1
+}
