@@ -11,74 +11,57 @@ Terms used on this page:
 - **PostGIS:** an add-on for PostgreSQL that understands map coordinates, so the database can answer "which places are within 1.5 km?".
 - **OSM (OpenStreetMap):** a free, community-made world map. We use its food places and its roads.
 
-## 1. System architecture
+## 1. System architecture (languages and tech stack)
 
 ```mermaid
-flowchart LR
-  classDef planned stroke-dasharray: 6 4,stroke:#888,color:#555,fill:#f6f6f6
+flowchart TB
   classDef built fill:#e3f2e3,stroke:#2e7d32,color:#1a1a1a
+  classDef planned stroke-dasharray: 6 4,stroke:#888,color:#555,fill:#f6f6f6
   classDef data fill:#e8eef7,stroke:#1f5fae,color:#1a1a1a
   classDef ext fill:#fff7e6,stroke:#b26a00,color:#1a1a1a
 
-  subgraph Clients["Clients"]
-    direction TB
-    WEB["React web app<br/>(Vite, React Router,<br/>Leaflet map, Recharts)"]:::built
-    MOB["React Native mobile app<br/>(Expo) - planned"]:::planned
+  subgraph P["Presentation layer"]
+    direction LR
+    WEB["<b>Web app</b><br/>JavaScript - React 19 - Vite<br/>React Router - Leaflet (maps)<br/>Recharts (charts) - CSS"]:::built
+    MOB["<b>Mobile app (planned)</b><br/>JavaScript - React Native - Expo"]:::planned
   end
 
-  subgraph API["Express REST API (backend/, Node.js)"]
-    direction TB
-    MW["Middleware<br/>helmet (safe headers) - CORS (allowed origins)<br/>JSON body limit 100 kb - zod validation"]:::built
-    subgraph Routers["4 module routers"]
-      direction TB
-      R1["Food Discovery<br/>/api/discovery"]:::built
-      R2["Food Hopping<br/>/api/hopping"]:::built
-      R3["Food Stalls Analytics<br/>/api/analytics"]:::built
-      R4["User Management<br/>/api/auth - planned"]:::planned
-    end
-    EH["notFound + errorHandler<br/>(standard error JSON)"]:::built
-    MW --> Routers --> EH
+  subgraph A["Application layer"]
+    API["<b>REST API</b><br/>JavaScript - Node.js 22 - Express 4<br/>zod (validation) - helmet (security)<br/>Dijkstra + Ant Colony Optimisation"]:::built
   end
 
-  subgraph Storage["Data"]
-    direction TB
-    DB[("Supabase PostgreSQL<br/>+ PostGIS<br/>(via pg, plain SQL)")]:::data
-    GRAPH[["data/road-graph-penang.json<br/>OSM road graph,<br/>loaded into memory"]]:::data
-    AUTH["Supabase Auth<br/>- planned (Phase 2B)"]:::planned
+  subgraph D["Data layer"]
+    direction LR
+    DB[("<b>Database</b><br/>PostgreSQL + PostGIS<br/>hosted on Supabase<br/>SQL via pg")]:::data
+    GRAPH[["<b>Road graph</b><br/>JSON file from<br/>OpenStreetMap"]]:::data
+    AUTH["<b>Supabase Auth</b><br/>(planned)"]:::planned
   end
 
-  subgraph External["External data sources (used by import scripts, not at run time)"]
-    direction TB
-    OVER["OSM Overpass API"]:::ext
-    GPL["Google Places API<br/>- planned (step 2.9a)"]:::planned
+  subgraph E["External services"]
+    direction LR
+    OSM["<b>OpenStreetMap</b><br/>places, roads, map tiles"]:::ext
+    GP["<b>Google Places</b><br/>ratings (planned)"]:::planned
   end
 
-  TILES["OpenStreetMap<br/>map tiles"]:::ext
-
-  WEB -- "HTTPS JSON (fetch)" --> MW
-  MOB -.-> MW
-  WEB -- "map images" --> TILES
-  R1 --> DB
-  R2 --> DB
-  R2 --> GRAPH
-  R3 --> DB
-  R4 -.-> AUTH
-  R4 -.-> DB
-  DB --- |"loaded from, by npm run import:osm"| OVER
-  GRAPH --- |"built from, by npm run build:road-graph"| OVER
-  DB -.- |"ratings from (planned)"| GPL
+  WEB -- "HTTPS / JSON" --> API
+  MOB -.-> API
+  API --> DB
+  API --> GRAPH
+  API -.-> AUTH
+  D --- E
 ```
 
-**In plain words**
+| Layer | Language | Tech stack |
+| --- | --- | --- |
+| Presentation (web) | JavaScript, CSS | React 19, Vite, React Router, Leaflet, Recharts |
+| Presentation (mobile, planned) | JavaScript | React Native, Expo |
+| Application (backend API) | JavaScript | Node.js 22, Express 4, zod, helmet; own Dijkstra and ACO code |
+| Data | SQL | PostgreSQL + PostGIS on Supabase (via `pg`); road graph JSON |
+| Authentication (planned) | | Supabase Auth |
+| External data | | OpenStreetMap (places, roads, map tiles); Google Places ratings (planned) |
+| Development tools | | Git + GitHub, ESLint, Prettier, Jest + Supertest (backend tests), Vitest (web tests) |
 
-- The **React web app** is the only client today. It talks to our backend only, using `fetch` and the address in `VITE_API_URL`. The **mobile app** (React Native with Expo) is planned and will call the same API.
-- Every request first passes the **middleware**: `helmet` adds safe HTTP headers, **CORS** (Cross-Origin Resource Sharing, the browser rule about which websites may call the API) only allows our own dev origins, and `validate` checks the input with **zod** (a schema library) and answers `400 VALIDATION_ERROR` if it is wrong.
-- Then one of the **module routers** handles it. Three are built: Food Discovery, Food Hopping and Food Stalls Analytics. The User Management router (`/api/auth/...` with Supabase Auth) is planned for Phase 2B. Until then, login, registration and profile run in **demo mode** inside the browser (see `docs/module-status.md`).
-- Unknown URLs and errors end at `notFound` and `errorHandler`, which always answer `{ success: false, error: { code, message, details } }` and never show stack traces or SQL.
-- Data lives in **Supabase PostgreSQL + PostGIS**. The backend uses the `pg` library with parameterised SQL (values sent as `$1, $2`, never pasted into the SQL text).
-- The **road graph** file (`data/road-graph-penang.json`, about 2.5 MB) is built once from OSM by `npm run build:road-graph`. The route planner loads it into memory the first time a route is planned. If the file is missing, it falls back to a simple graph that links each place to its 4 nearest places (straight-line distance x 1.3).
-- **OSM Overpass** (the OSM download service) is used only by the two import scripts, never while the app is running (the lines on the right have no arrow because they are one-off imports, not live calls). The web map loads its background images (tiles) from OpenStreetMap directly.
-- **Google Places** ratings (step 2.9a) are planned, to replace the invented ratings of the 55 sample places.
+Solid boxes are built; dashed boxes are planned.
 
 ## 2. Sequence: "Plan a food hop"
 
