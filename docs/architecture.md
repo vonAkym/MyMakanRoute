@@ -11,57 +11,29 @@ Terms used on this page:
 - **PostGIS:** an add-on for PostgreSQL that understands map coordinates, so the database can answer "which places are within 1.5 km?".
 - **OSM (OpenStreetMap):** a free, community-made world map. We use its food places and its roads.
 
-## 1. System architecture (languages and tech stack)
+## 1. System architecture
 
 ```mermaid
-flowchart TB
-  classDef built fill:#e3f2e3,stroke:#2e7d32,color:#1a1a1a
-  classDef planned stroke-dasharray: 6 4,stroke:#888,color:#555,fill:#f6f6f6
-  classDef data fill:#e8eef7,stroke:#1f5fae,color:#1a1a1a
-  classDef ext fill:#fff7e6,stroke:#b26a00,color:#1a1a1a
-
-  subgraph P["Presentation layer"]
-    direction LR
-    WEB["<b>Web app</b><br/>JavaScript - React 19 - Vite<br/>React Router - Leaflet (maps)<br/>Recharts (charts) - CSS"]:::built
-    MOB["<b>Mobile app (planned)</b><br/>JavaScript - React Native - Expo"]:::planned
-  end
-
-  subgraph A["Application layer"]
-    API["<b>REST API</b><br/>JavaScript - Node.js 22 - Express 4<br/>zod (validation) - helmet (security)<br/>Dijkstra + Ant Colony Optimisation"]:::built
-  end
-
-  subgraph D["Data layer"]
-    direction LR
-    DB[("<b>Database</b><br/>PostgreSQL + PostGIS<br/>hosted on Supabase<br/>SQL via pg")]:::data
-    GRAPH[["<b>Road graph</b><br/>JSON file from<br/>OpenStreetMap"]]:::data
-    AUTH["<b>Supabase Auth</b><br/>(planned)"]:::planned
-  end
-
-  subgraph E["External services"]
-    direction LR
-    OSM["<b>OpenStreetMap</b><br/>places, roads, map tiles"]:::ext
-    GP["<b>Google Places</b><br/>ratings (planned)"]:::planned
-  end
-
-  WEB -- "HTTPS / JSON" --> API
+flowchart LR
+  classDef box fill:#ffffff,stroke:#333,color:#111
+  classDef planned fill:#ffffff,stroke:#999,color:#777,stroke-dasharray: 5 4
+  WEB["<b>Web App</b><br/>React (JavaScript)"]:::box
+  MOB["<b>Mobile App</b><br/>React Native<br/>(planned)"]:::planned
+  API["<b>Backend API</b><br/>Node.js + Express"]:::box
+  DB[("<b>Database</b><br/>PostgreSQL + PostGIS<br/>(Supabase)")]:::box
+  OSM["<b>OpenStreetMap</b><br/>places and roads"]:::box
+  WEB --> API
   MOB -.-> API
   API --> DB
-  API --> GRAPH
-  API -.-> AUTH
-  D --- E
+  OSM -.-> DB
 ```
 
-| Layer | Language | Tech stack |
-| --- | --- | --- |
-| Presentation (web) | JavaScript, CSS | React 19, Vite, React Router, Leaflet, Recharts |
-| Presentation (mobile, planned) | JavaScript | React Native, Expo |
-| Application (backend API) | JavaScript | Node.js 22, Express 4, zod, helmet; own Dijkstra and ACO code |
-| Data | SQL | PostgreSQL + PostGIS on Supabase (via `pg`); road graph JSON |
-| Authentication (planned) | | Supabase Auth |
-| External data | | OpenStreetMap (places, roads, map tiles); Google Places ratings (planned) |
-| Development tools | | Git + GitHub, ESLint, Prettier, Jest + Supertest (backend tests), Vitest (web tests) |
-
-Solid boxes are built; dashed boxes are planned.
+| Layer | Tech |
+| --- | --- |
+| Frontend | React (JavaScript); React Native mobile app planned |
+| Backend | Node.js + Express (JavaScript) |
+| Database | PostgreSQL + PostGIS on Supabase |
+| Data source | OpenStreetMap |
 
 ## 2. Sequence: "Plan a food hop"
 
