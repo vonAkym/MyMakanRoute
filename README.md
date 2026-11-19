@@ -126,6 +126,8 @@ npm.cmd run lint
 npm.cmd run build            # production build into web/dist
 ```
 
+GitHub Actions (`.github/workflows/ci.yml`) runs these checks automatically on every push and pull request: lint, Prettier format check and tests for the backend, and the same plus the production build for the web app. A red cross next to a commit on GitHub means one of the checks failed.
+
 ## Data
 
 - **Sample data (55 places):** real Penang place names and coordinates from OpenStreetMap, with **invented** ratings, review counts, prices, halal flags, opening hours and dietary tags. They are for testing only and are **not real reviews**. In the database they are marked `source='sample'` and `is_sample=true`, and the web app shows a sample-data notice.
@@ -140,11 +142,12 @@ npm.cmd run build            # production build into web/dist
   - Backend: hidden gem rule, place search with filters, route planner (OpenStreetMap road graph, Dijkstra travel times, Ant Colony Optimisation visiting order, compared with nearest neighbour and brute force), analytics overview, feasibility study.
   - Web app: Discover (list + map), Trip (plan route, reorder, save), Trips (past trips), Analytics dashboard.
   - Landing page redesigned (4 Nov 2026); the other pages will be restyled to match after the student's review.
+- **GitHub Actions CI: added (19 Nov 2026).** Lint, format check and tests run on every push.
 - **Demo mode (until Phase 2B):** login, registration and profile run only in the browser; saved and past trips are stored in the browser (localStorage).
 - **Planned:**
   - Phase 2B: real accounts with Supabase Auth through our backend, and the itinerary API.
   - Step 2.9a: Google ratings for the sample places.
   - Phase 2D: mobile app (React Native + Expo).
-  - Phase 3: GitHub Actions CI, API description, final feasibility results.
+  - Phase 3: API description, final feasibility results.
 
   See `docs/PLAN.md` and `docs/module-status.md`.
