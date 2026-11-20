@@ -78,6 +78,8 @@ web/
                        landing/ holds the landing page sections
   src/context/         AuthContext (demo user), TripBasketContext (trip basket)
   src/hooks/, src/lib/ (storage.js = localStorage helpers, format.js, constants.js), src/data/
+  src/demo/            GitHub Pages demo: browser copies of the backend logic + the 55 SAMPLE
+                       places (keep in step with the backend; npm run build:pages)
   src/assets/landing/  landing page images (photos supplied by the student, licence to confirm)
 mobile/                empty, planned (Phase 2D)
 data/                  osm-penang.json (OSM places), road-graph-penang.json (OSM roads)

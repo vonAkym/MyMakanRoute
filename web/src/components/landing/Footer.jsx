@@ -22,7 +22,8 @@ function SocialIcons({ items }) {
   // Share: the phone/OS share sheet when the browser has one, else copy the link.
   async function onShare() {
     // Share the home page only (never the current URL with its query or hash).
-    const url = `${window.location.origin}/`;
+    // BASE_URL is "/" normally and "/MyMakanRoute/" on GitHub Pages.
+    const url = `${window.location.origin}${import.meta.env.BASE_URL}`;
     try {
       if (typeof navigator.share === "function") {
         await navigator.share({ title: "MyMakanRoute", url });

@@ -5,6 +5,8 @@ A guide for smart food hopping and discovery in Malaysia, starting with Penang. 
 Author: Danial Hakim bin Kamal Azwa
 Supervisor: Dr. Zarul Fitri Zaaba
 
+**Live demo:** https://vonakym.github.io/MyMakanRoute/ (web app only, with the 55 SAMPLE places; see "GitHub Pages demo" below).
+
 ## Modules
 
 | Module                | Submodules                                                                                            |
@@ -97,6 +99,12 @@ Open http://localhost:5173. The backend only accepts browser requests from this 
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
+### GitHub Pages demo
+
+GitHub Pages can only host static files, so it cannot run the backend. The Pages build (`npm run build:pages` in `web/`) switches on **demo mode**: `web/src/demo/` answers the four API calls inside the browser with the 55 SAMPLE places (invented ratings). It uses the same hidden gem rule, Dijkstra, Ant Colony Optimisation, nearest neighbour, brute force and analytics as the backend. One difference: the real road map is too big to ship to the browser, so travel times always use the backend's fallback estimate (each stop linked to its 4 nearest stops, straight line x 1.3). The CI workflow publishes the demo to the `gh-pages` branch after the tests pass on `feature/feasibility-core` or `main`.
+
+To try demo mode locally, add `VITE_DEMO_MODE=true` to `web/.env` and run `npm.cmd run dev` (no backend needed).
+
 ### API endpoints (built)
 
 | Method and path | Submodule |
@@ -143,6 +151,7 @@ GitHub Actions (`.github/workflows/ci.yml`) runs these checks automatically on e
   - Web app: Discover (list + map), Trip (plan route, reorder, save), Trips (past trips), Analytics dashboard.
   - Landing page redesigned (4 Nov 2026); the other pages will be restyled to match after the student's review.
 - **GitHub Actions CI: added (19 Nov 2026).** Lint, format check and tests run on every push.
+- **GitHub Pages demo: added (21 Nov 2026).** The web app with the 55 SAMPLE places runs in the browser at https://vonakym.github.io/MyMakanRoute/.
 - **Demo mode (until Phase 2B):** login, registration and profile run only in the browser; saved and past trips are stored in the browser (localStorage).
 - **Planned:**
   - Phase 2B: real accounts with Supabase Auth through our backend, and the itinerary API.

@@ -10,7 +10,7 @@ import { TripBasketProvider } from "./context/TripBasketContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <TripBasketProvider>
           <App />

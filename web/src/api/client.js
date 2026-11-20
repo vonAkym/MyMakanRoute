@@ -30,8 +30,20 @@ export function toQueryString(params = {}) {
   return text ? `?${text}` : "";
 }
 
+// Demo mode: the GitHub Pages build (vite build --mode pages) has no backend, so every call
+// is answered in the browser by src/demo/ with the 55 sample places.
+// VITE_DEMO_MODE=true in web/.env turns it on for local testing too.
+export function isDemoMode(env = import.meta.env) {
+  return env.MODE === "pages" || env.VITE_DEMO_MODE === "true";
+}
+
 // path: "/api/..." ; options: { method, body, query, signal }
 export async function apiRequest(path, { method = "GET", body, query, signal } = {}) {
+  if (isDemoMode()) {
+    const { demoRequest } = await import("../demo/demoApi.js");
+    return demoRequest(path, { method, body, query });
+  }
+
   const url = `${API_URL}${path}${toQueryString(query)}`;
   let response;
   try {

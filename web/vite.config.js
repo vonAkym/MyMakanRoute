@@ -2,7 +2,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig({
+// GitHub Pages serves the site from /MyMakanRoute/, so the "pages" build (npm run build:pages)
+// uses that base path. Every other build serves from /.
+export default defineConfig(({ mode }) => ({
+  base: mode === "pages" ? "/MyMakanRoute/" : "/",
   plugins: [react()],
   server: { port: 5173 },
   test: {
@@ -11,4 +14,4 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.js"],
     css: false,
   },
-});
+}));
