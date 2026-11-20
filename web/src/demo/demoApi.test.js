@@ -1,7 +1,7 @@
 // Demo mode (GitHub Pages build): the in-browser answers must match the backend's rules
 // and data shapes.
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 import { describe, expect, test } from "vitest";
 import { demoRequest } from "./demoApi";
 import { DEMO_PLACES } from "./places";
@@ -17,9 +17,8 @@ const route = (body) => demoRequest("/api/hopping/route", { method: "POST", body
 
 describe("demo data", () => {
   test("is the same file as the backend seed", () => {
-    const backendSeed = fileURLToPath(
-      new URL("../../../backend/db/seeds/sample-places.json", import.meta.url),
-    );
+    // npm test runs inside web/, so the backend folder is one level up.
+    const backendSeed = resolve(process.cwd(), "../backend/db/seeds/sample-places.json");
     expect(demoSeed).toEqual(JSON.parse(readFileSync(backendSeed, "utf8")));
   });
 
