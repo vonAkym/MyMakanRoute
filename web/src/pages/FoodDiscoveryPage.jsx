@@ -2,11 +2,13 @@
 //   Food Place Searching      -> location picker, filters, result list
 //   Hidden Gem Highlighting   -> labels from the API, gems ranked first, distinct badges/markers
 //   Food Place Visualisation  -> map with markers + place detail panel
+// Also shows Food Place Suggestion ("Suggested for you", FR-FA-04) from Food Stalls Analytics.
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Crosshair, List, Map as MapIcon, MapPin, Route, Sparkles } from "lucide-react";
 import { searchFoodPlaces } from "../api/foodDiscovery";
+import { getFoodPlaceSuggestions } from "../api/foodStallsAnalytics";
 import { getPreferences, hasPreferences } from "../api/userManagement";
 import { useTripBasket } from "../context/TripBasketContext";
 import FilterPanel from "../components/FilterPanel";
@@ -14,6 +16,7 @@ import PlaceCard from "../components/PlaceCard";
 import PlaceMap from "../components/PlaceMap";
 import PlaceDetailDrawer from "../components/PlaceDetailDrawer";
 import SampleDataBanner from "../components/SampleDataBanner";
+import SuggestionsCard from "../components/SuggestionsCard";
 import EmptyState from "../components/EmptyState";
 import ErrorState from "../components/ErrorState";
 import LoadingSkeleton from "../components/LoadingSkeleton";
@@ -57,6 +60,17 @@ export default function FoodDiscoveryPage() {
   const [view, setView] = useState("list"); // mobile only: "list" | "map"
   const [announcement, setAnnouncement] = useState("");
   const basket = useTripBasket();
+  const [suggested, setSuggested] = useState({ basedOn: null, places: [] });
+
+  // "Suggested for you": loaded once. If it fails, the section simply stays hidden,
+  // because the search results below are the main content of this page.
+  useEffect(() => {
+    const controller = new AbortController();
+    getFoodPlaceSuggestions({ signal: controller.signal })
+      .then((data) => setSuggested({ basedOn: data.basedOn, places: data.suggestions ?? [] }))
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
 
   // Server-side filters only; "ratedOnly" is applied below in the browser.
   const { ratedOnly, ...serverFilters } = filters;
@@ -147,7 +161,10 @@ export default function FoodDiscoveryPage() {
     );
   }
 
-  const detailPlace = places.find((p) => p.id === detailId) ?? null;
+  const detailPlace =
+    places.find((p) => p.id === detailId) ??
+    suggested.places.find((p) => p.id === detailId) ??
+    null;
 
   return (
     <div className="container page discover">
@@ -204,6 +221,16 @@ export default function FoodDiscoveryPage() {
               </p>
             )}
           </section>
+
+          <SuggestionsCard
+            className="discover-suggestions"
+            suggestions={suggested.places}
+            basedOn={suggested.basedOn}
+            onOpen={(place) => {
+              setSelectedId(place.id);
+              setDetailId(place.id);
+            }}
+          />
 
           <FilterPanel
             filters={filters}

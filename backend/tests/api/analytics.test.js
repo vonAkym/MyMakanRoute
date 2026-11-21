@@ -4,6 +4,7 @@ jest.mock("../../src/modules/food-stalls-analytics/model", () => ({
   summariseRatedFoodPlaces: jest.fn(),
   averageRatingBy: jest.fn(),
   findRatedFoodPlaces: jest.fn(),
+  findPlaceFeatures: jest.fn(),
 }));
 const model = require("../../src/modules/food-stalls-analytics/model");
 const app = require("../../src/app");
@@ -131,5 +132,49 @@ describe("GET /api/analytics/overview", () => {
     expect(res.body.error.code).toBe("INTERNAL_ERROR");
     expect(JSON.stringify(res.body)).not.toContain("10.0.0.1");
     spy.mockRestore();
+  });
+});
+
+describe("Food Place Suggestion with preferences", () => {
+  const PAST_ID = "11111111-1111-4111-8111-111111111111";
+
+  test("overview: halal preference keeps only halal places and says what it is based on", async () => {
+    mockSampleData();
+    const res = await request(app).get("/api/analytics/overview?halal=true&cuisine=chinese");
+    expect(res.status).toBe(200);
+    expect(res.body.data.suggestionsBasedOn).toBe("preferences");
+    expect(res.body.data.suggestions.map((p) => p.id)).toEqual(["a"]);
+    expect(res.body.data.suggestions[0].matchedOn).toEqual(["cuisine", "hidden gem"]);
+  });
+
+  test("overview without preferences: findings only", async () => {
+    mockSampleData();
+    const res = await request(app).get("/api/analytics/overview");
+    expect(res.body.data.suggestionsBasedOn).toBe("findings");
+    expect(model.findPlaceFeatures).not.toHaveBeenCalled();
+  });
+
+  test("GET /api/analytics/suggestions uses past trips; ids that are not UUIDs are ignored", async () => {
+    mockSampleData();
+    model.findPlaceFeatures.mockResolvedValue([
+      { id: PAST_ID, area: "George Town", cuisine: "chinese", price_level: 1 },
+    ]);
+    const res = await request(app).get(
+      `/api/analytics/suggestions?pastPlaceIds=${PAST_ID},way-123,${PAST_ID}`,
+    );
+    expect(res.status).toBe(200);
+    expect(model.findPlaceFeatures).toHaveBeenCalledWith([PAST_ID]);
+    const { data } = res.body;
+    expect(data.basedOn).toBe("preferences");
+    // Hidden gems match 4 features (cuisine, price, area, hidden gem); the others 3.
+    expect(data.suggestions.map((p) => p.id)).toEqual(["b", "a", "c", "d"]);
+    expect(data.suggestions[0].matchScore).toBe(4);
+    expect(data.note).toBe("Ratings for sample places are invented for testing.");
+  });
+
+  test("bad preference values -> 400 VALIDATION_ERROR", async () => {
+    const res = await request(app).get("/api/analytics/suggestions?maxPrice=9&halal=maybe");
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_ERROR");
   });
 });

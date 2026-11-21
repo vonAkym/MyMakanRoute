@@ -1,12 +1,12 @@
 // DEMO MODE: answers the web app's API calls inside the browser, with the 55 sample places,
 // so the GitHub Pages version works without the backend server.
 // It is switched on only in the Pages build (see isDemoMode() in api/client.js).
-// It answers the same four endpoints as the backend, with the same data shapes.
+// It answers the same five endpoints as the backend, with the same data shapes.
 
 import { ApiError } from "../api/client.js";
 import { searchFoodPlaces, getFoodPlace } from "./discovery.js";
 import { planRoute } from "./routePlanner.js";
-import { getAnalyticsOverview } from "./analytics.js";
+import { getAnalyticsOverview, getFoodPlaceSuggestions } from "./analytics.js";
 
 const PLACE_PATH = /^\/api\/discovery\/places\/([^/]+)$/;
 
@@ -28,7 +28,11 @@ export async function demoRequest(path, { method = "GET", body, query } = {}) {
 
   if (method === "POST" && path === "/api/hopping/route") return planRoute(body);
 
-  if (method === "GET" && path === "/api/analytics/overview") return getAnalyticsOverview();
+  if (method === "GET" && path === "/api/analytics/overview") return getAnalyticsOverview(query);
+
+  if (method === "GET" && path === "/api/analytics/suggestions") {
+    return getFoodPlaceSuggestions(query);
+  }
 
   throw new ApiError("This feature is not available in the demo version.", {
     code: "NOT_FOUND",

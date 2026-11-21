@@ -111,3 +111,7 @@
     height: calc(100dvh - var(--header-height) - var(--space-xl));
   }
 }
+
+.discover-suggestions {
+  margin-bottom: var(--space-md);
+}

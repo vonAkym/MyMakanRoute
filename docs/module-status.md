@@ -88,7 +88,7 @@ Test files are in `backend/tests/` (Jest; they run without a database, internet 
 | Food Hopping | Past Food Hopping Visualisation | 🟡 Lists trips saved in this browser and draws them on the map | Planned (2B, step 2.14) | `/trips` | No dedicated test yet |
 | Food Stalls Analytics | Food Places Visualisation | ✅ Built (totals, by area, by cuisine, label counts, rating vs reviews points) | `GET /api/analytics/overview` | `/analytics` charts | `tests/api/analytics.test.js`, `tests/unit/foodStallsAnalytics.test.js`; `FoodStallsAnalyticsPage.test.jsx` |
 | Food Stalls Analytics | Food Places Analysis | ✅ Built (written findings) | `findings` in `/api/analytics/overview` | `/analytics` "Findings" | same as above |
-| Food Stalls Analytics | Food Place Suggestion | ✅ Built (top 5 hidden gems) | `suggestions` in `/api/analytics/overview` | `/analytics` | same as above |
+| Food Stalls Analytics | Food Place Suggestion | ✅ Built (SRD 4.8.4: strict preferences, then a match score on cuisine, price level, area and Hidden Gem label from preferences and saved-trip stops; up to 5; findings only when no preferences) | `suggestions` in `/api/analytics/overview`, `GET /api/analytics/suggestions` | `/analytics` and `/discover` "Suggested for you" | same as above + `FoodDiscoveryPage.test.jsx` |
 
 Shared foundation (supports all modules, built): settings check (`config.test.js`), database pool and SSL, migrations (`migrate.test.js`, `lockDownMigration.test.js`), 55 SAMPLE places (`seed.test.js`), OSM import (`importOsm.test.js`), validation and error format (`validation.test.js`, `errors.test.js`, `errorHandler.test.js`), landing page (`/`, `HomePage.test.jsx` and the landing component tests).
 

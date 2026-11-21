@@ -4,8 +4,8 @@
 
 import { DEMO_PLACES, DEMO_THRESHOLDS, DEMO_NOTE } from "./places.js";
 import { LABELS, labelHiddenGem } from "./discovery.js";
+import { suggestFoodPlaces } from "./suggestion.js";
 
-const SUGGESTION_COUNT = 5;
 const MIN_PLACES_TO_COMPARE = 3;
 const NO_LABEL = "No label";
 
@@ -41,12 +41,39 @@ function averagesFor(places) {
   };
 }
 
-// Food Place Suggestion: best rated hidden gems first; fewer reviews first when tied.
-export function suggestFoodPlaces(places, count = SUGGESTION_COUNT) {
-  return places
-    .filter((p) => p.label === LABELS.HIDDEN_GEM)
-    .sort((a, b) => b.avgRating - a.avgRating || a.reviewCount - b.reviewCount)
-    .slice(0, count);
+// Query from the web app (before it becomes a URL): { halal, maxPrice, cuisine: [],
+// dietary: [], pastPlaceIds: [] }. Values are checked the same way as routes.js does.
+const asList = (value) =>
+  (Array.isArray(value) ? value : String(value ?? "").split(","))
+    .map((s) => String(s).trim())
+    .filter(Boolean);
+
+function preferencesFrom(query = {}) {
+  const maxPrice = Number(query.maxPrice);
+  return {
+    halal: query.halal === true || query.halal === "true" ? true : undefined,
+    maxPrice: Number.isInteger(maxPrice) && maxPrice >= 1 && maxPrice <= 4 ? maxPrice : undefined,
+    cuisine: asList(query.cuisine).map((c) => c.toLowerCase()),
+    dietary: asList(query.dietary).map((d) => d.toLowerCase()),
+  };
+}
+
+// Past choices: area, cuisine and price level of the places in the user's saved trips.
+function pastPlacesFrom(query = {}) {
+  const ids = new Set(asList(query.pastPlaceIds));
+  return DEMO_PLACES.filter((p) => ids.has(p.id)).map((p) => ({
+    id: p.id,
+    area: p.area,
+    cuisine: p.cuisine,
+    priceLevel: p.price_level,
+  }));
+}
+
+function suggestionsFor(places, query) {
+  return suggestFoodPlaces(places, {
+    preferences: preferencesFrom(query),
+    pastPlaces: pastPlacesFrom(query),
+  });
 }
 
 // Food Places Analysis: same sentences as analyseFoodPlaces() in findings.js.
@@ -91,7 +118,7 @@ export function analyseFoodPlaces({ totals, byArea, byCuisine, labelAverages, th
 }
 
 // Same answer shape as GET /api/analytics/overview.
-export function getAnalyticsOverview() {
+export function getAnalyticsOverview(query = {}) {
   const thresholds = DEMO_THRESHOLDS;
   const rows = DEMO_PLACES.filter((r) => r.avg_rating != null).sort(
     (a, b) =>
@@ -107,6 +134,7 @@ export function getAnalyticsOverview() {
     cuisine: row.cuisine,
     isHalal: row.is_halal,
     priceLevel: row.price_level,
+    dietary: row.dietary,
     avgRating: row.avg_rating,
     reviewCount: row.review_count,
     isSample: true,
@@ -132,6 +160,7 @@ export function getAnalyticsOverview() {
   const byArea = averageRatingBy(rows, (r) => r.area?.trim() || "Unknown area");
   const byCuisine = averageRatingBy(rows, (r) => (r.cuisine?.trim() || "unknown").toLowerCase());
   const labelAverages = { hiddenGem: averagesFor(hiddenGems), popular: averagesFor(popular) };
+  const { basedOn, suggestions } = suggestionsFor(places, query);
 
   return {
     totals,
@@ -150,9 +179,16 @@ export function getAnalyticsOverview() {
       reviewCount,
       label,
     })),
-    suggestions: suggestFoodPlaces(places),
+    suggestions,
+    suggestionsBasedOn: basedOn,
     findings: analyseFoodPlaces({ totals, byArea, byCuisine, labelAverages, thresholds }),
     thresholds,
     note: DEMO_NOTE,
   };
+}
+
+// Same answer shape as GET /api/analytics/suggestions.
+export function getFoodPlaceSuggestions(query = {}) {
+  const { suggestions, suggestionsBasedOn, thresholds, note } = getAnalyticsOverview(query);
+  return { basedOn: suggestionsBasedOn, suggestions, thresholds, note };
 }

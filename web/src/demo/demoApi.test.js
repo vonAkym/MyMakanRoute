@@ -174,6 +174,43 @@ describe("Food Stalls Analytics (demo)", () => {
   });
 });
 
+describe("Food Place Suggestion (demo)", () => {
+  const suggest = (query) => demoRequest("/api/analytics/suggestions", { query });
+
+  test("without preferences or trips, suggests the best rated hidden gems", async () => {
+    const data = await suggest({});
+    expect(data.basedOn).toBe("findings");
+    expect(data.suggestions.length).toBeGreaterThan(0);
+    expect(data.suggestions.every((p) => p.label === "Hidden Gem")).toBe(true);
+  });
+
+  test("strict preferences remove places; best matches come first", async () => {
+    const data = await suggest({ halal: true, maxPrice: 2, cuisine: ["malay"] });
+    expect(data.basedOn).toBe("preferences");
+    expect(data.suggestions.length).toBeGreaterThan(0);
+    expect(data.suggestions.length).toBeLessThanOrEqual(5);
+    expect(data.suggestions.every((p) => p.isHalal && p.priceLevel <= 2)).toBe(true);
+    const scores = data.suggestions.map((p) => p.matchScore);
+    expect(scores).toEqual([...scores].sort((a, b) => b - a));
+    expect(scores.every((s) => s > 0)).toBe(true);
+  });
+
+  test("past trips count as past choices (area of a visited place)", async () => {
+    const visited = DEMO_PLACES.find((p) => p.area === "Gelugor") ?? DEMO_PLACES[0];
+    const data = await suggest({ pastPlaceIds: [visited.id] });
+    expect(data.basedOn).toBe("preferences");
+    expect(data.suggestions.map((p) => p.id)).not.toContain(visited.id);
+    expect(data.suggestions.some((p) => p.matchedOn.includes("area"))).toBe(true);
+  });
+
+  test("the analytics overview uses the same suggestions", async () => {
+    const query = { halal: true };
+    const overview = await demoRequest("/api/analytics/overview", { query });
+    expect(overview.suggestionsBasedOn).toBe("preferences");
+    expect(overview.suggestions).toEqual((await suggest(query)).suggestions);
+  });
+});
+
 test("unknown endpoints answer 404 in the demo", async () => {
   await expect(demoRequest("/api/auth/login", { method: "POST" })).rejects.toMatchObject({
     status: 404,

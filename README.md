@@ -101,7 +101,7 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 ### GitHub Pages demo
 
-GitHub Pages can only host static files, so it cannot run the backend. The Pages build (`npm run build:pages` in `web/`) switches on **demo mode**: `web/src/demo/` answers the four API calls inside the browser with the 55 SAMPLE places (invented ratings). It uses the same hidden gem rule, Dijkstra, Ant Colony Optimisation, nearest neighbour, brute force and analytics as the backend. One difference: the real road map is too big to ship to the browser, so travel times always use the backend's fallback estimate (each stop linked to its 4 nearest stops, straight line x 1.3). The CI workflow publishes the demo to the `gh-pages` branch after the tests pass on `feature/feasibility-core` or `main`.
+GitHub Pages can only host static files, so it cannot run the backend. The Pages build (`npm run build:pages` in `web/`) switches on **demo mode**: `web/src/demo/` answers the API calls inside the browser with the 55 SAMPLE places (invented ratings). It uses the same hidden gem rule, Dijkstra, Ant Colony Optimisation, nearest neighbour, brute force and analytics as the backend. One difference: the real road map is too big to ship to the browser, so travel times always use the backend's fallback estimate (each stop linked to its 4 nearest stops, straight line x 1.3). The CI workflow publishes the demo to the `gh-pages` branch after the tests pass on `feature/feasibility-core` or `main`.
 
 To try demo mode locally, add `VITE_DEMO_MODE=true` to `web/.env` and run `npm.cmd run dev` (no backend needed).
 
@@ -112,7 +112,8 @@ To try demo mode locally, add `VITE_DEMO_MODE=true` to `web/.env` and run `npm.c
 | `GET /api/discovery/places?lat&lng&radius&halal&maxPrice&cuisine&dietary&openNow&label&limit` | Food Place Searching, Hidden Gem Highlighting |
 | `GET /api/discovery/places/:id` | Food Place Visualisation |
 | `POST /api/hopping/route` | Route Planner (Dijkstra + Ant Colony Optimisation) |
-| `GET /api/analytics/overview` | Food Places Visualisation, Analysis, Suggestion |
+| `GET /api/analytics/overview?halal&maxPrice&cuisine&dietary&pastPlaceIds` | Food Places Visualisation, Analysis, Suggestion |
+| `GET /api/analytics/suggestions?halal&maxPrice&cuisine&dietary&pastPlaceIds` | Food Place Suggestion ("Suggested for you" on Discover) |
 
 ### Tests, code style and feasibility study
 

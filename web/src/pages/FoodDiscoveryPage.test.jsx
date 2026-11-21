@@ -53,6 +53,10 @@ const searchResult = {
   note: "Ratings for sample places are invented for testing.",
 };
 
+// The page also asks for suggestions, so find the search call by its path.
+const searchUrl = (fetchFn) =>
+  fetchFn.mock.calls.map((c) => new URL(c[0])).find((u) => u.pathname === "/api/discovery/places");
+
 describe("FoodDiscoveryPage", () => {
   test("lists rated places from the API with labels and the sample banner", async () => {
     const fetchFn = mockFetch({ "GET /api/discovery/places": ok(searchResult) });
@@ -69,7 +73,7 @@ describe("FoodDiscoveryPage", () => {
     expect(screen.getByTestId("map")).toHaveTextContent("2 markers");
 
     // Default search: Komtar, 1.5 km.
-    const url = new URL(fetchFn.mock.calls[0][0]);
+    const url = searchUrl(fetchFn);
     expect(url.searchParams.get("lat")).toBe("5.4145");
     expect(url.searchParams.get("lng")).toBe("100.3292");
     expect(url.searchParams.get("radius")).toBe("1500");
@@ -104,7 +108,7 @@ describe("FoodDiscoveryPage", () => {
     renderWithProviders(<FoodDiscoveryPage />);
 
     expect(await screen.findByText("No places match these filters")).toBeInTheDocument();
-    const url = new URL(fetchFn.mock.calls[0][0]);
+    const url = searchUrl(fetchFn);
     expect(url.searchParams.get("halal")).toBe("true");
     expect(url.searchParams.get("maxPrice")).toBe("2");
     expect(url.searchParams.get("cuisine")).toBe("malay");
@@ -121,5 +125,30 @@ describe("FoodDiscoveryPage", () => {
     renderWithProviders(<FoodDiscoveryPage />);
     expect(await screen.findByText("Could not load food places")).toBeInTheDocument();
     expect(screen.getByText(/Cannot reach the MyMakanRoute server/)).toBeInTheDocument();
+  });
+
+  test("shows 'Suggested for you' and opens a suggestion's details (FR-FA-04, UC-10)", async () => {
+    const gem = searchResult.places.find((p) => p.name === "Gem Stall");
+    mockFetch({
+      "GET /api/discovery/places": ok(searchResult),
+      [`GET /api/discovery/places/${gem.id}`]: ok({ place: gem }),
+      "GET /api/analytics/suggestions": ok({
+        basedOn: "preferences",
+        suggestions: [{ ...gem, matchScore: 2, matchedOn: ["cuisine", "hidden gem"] }],
+      }),
+    });
+    renderWithProviders(<FoodDiscoveryPage />);
+
+    const card = await screen.findByRole("region", { name: "Suggested for you" });
+    expect(within(card).getByText("Matches your cuisine, hidden gem")).toBeVisible();
+    fireEvent.click(within(card).getByRole("button", { name: "Gem Stall" }));
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+  });
+
+  test("hides the suggestion section when the suggestions cannot load", async () => {
+    mockFetch({ "GET /api/discovery/places": ok(searchResult) });
+    renderWithProviders(<FoodDiscoveryPage />);
+    await screen.findByRole("list", { name: "Food places" });
+    expect(screen.queryByRole("region", { name: "Suggested for you" })).not.toBeInTheDocument();
   });
 });

@@ -79,6 +79,14 @@ export async function listSavedTrips() {
     : [];
 }
 
+// Past choices for Food Place Suggestion: the ids of the places in saved trips, newest
+// trips first, each id once, at most 50.
+export async function listPastPlaceIds() {
+  const trips = await listSavedTrips();
+  const ids = trips.flatMap((t) => t.route.stops.map((s) => s?.id)).filter(Boolean);
+  return [...new Set(ids)].slice(0, 50);
+}
+
 export async function getSavedTrip(id) {
   const trips = await listSavedTrips();
   return trips.find((t) => t.id === id) ?? null;

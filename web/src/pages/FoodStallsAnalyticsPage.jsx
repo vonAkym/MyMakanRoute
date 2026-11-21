@@ -1,7 +1,7 @@
 // Food Stalls Analytics module page (/analytics), bento dashboard:
 //   Food Places Visualisation -> KPI cards + charts (GET /api/analytics/overview)
 //   Food Places Analysis      -> "Findings" sentences written by the backend
-//   Food Place Suggestion     -> top hidden gems
+//   Food Place Suggestion     -> "Suggested for you" (preferences + past trips, SuggestionsCard)
 
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -25,13 +25,15 @@ import {
 import { Gem, Lightbulb, Percent, Star, Store } from "lucide-react";
 import { getAnalyticsOverview } from "../api/foodStallsAnalytics";
 import ChartCard, { chartColour } from "../components/ChartCard";
-import LabelBadge from "../components/LabelBadge";
 import SampleDataBanner from "../components/SampleDataBanner";
+import SuggestionsCard from "../components/SuggestionsCard";
+import PlaceDetailDrawer from "../components/PlaceDetailDrawer";
+import { useTripBasket } from "../context/TripBasketContext";
 import ErrorState from "../components/ErrorState";
 import EmptyState from "../components/EmptyState";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 import usePageTitle from "../hooks/usePageTitle";
-import { capitalise, formatHalal, formatRating } from "../lib/format";
+import { capitalise, formatRating } from "../lib/format";
 import "./FoodStallsAnalyticsPage.css";
 
 const LABEL_COLOUR_TOKENS = {
@@ -99,6 +101,8 @@ export default function FoodStallsAnalyticsPage() {
   usePageTitle("Food stalls analytics");
   const [state, setState] = useState({ status: "loading", data: null, error: null });
   const [attempt, setAttempt] = useState(0);
+  const [detailId, setDetailId] = useState(null); // suggestion opened in the details panel
+  const basket = useTripBasket();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -405,34 +409,12 @@ export default function FoodStallsAnalyticsPage() {
             </ResponsiveContainer>
           </ChartCard>
 
-          <section className="card bento__suggestions" aria-labelledby="suggest-title">
-            <h2 id="suggest-title">Suggested hidden gems</h2>
-            <p className="muted small">
-              Best rated hidden gems; with equal ratings, the less known one first.
-            </p>
-            {suggestions.length === 0 ? (
-              <p className="muted">No hidden gems yet.</p>
-            ) : (
-              <ol className="suggestions">
-                {suggestions.map((s) => (
-                  <li key={s.id} className="suggestion">
-                    <div>
-                      <strong className="suggestion__name">{s.name}</strong>
-                      <span className="muted small">
-                        {capitalise(s.cuisine)} · {s.area} · {formatHalal(s.isHalal)}
-                      </span>
-                    </div>
-                    <div className="suggestion__right">
-                      <span className="tabular">
-                        <Star size={14} aria-hidden="true" className="suggestion__star" />
-                        {formatRating(s.avgRating)} ({s.reviewCount})
-                      </span>
-                      <LabelBadge label={s.label} size="sm" />
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            )}
+          <SuggestionsCard
+            className="bento__suggestions"
+            suggestions={suggestions}
+            basedOn={data.suggestionsBasedOn}
+            onOpen={(place) => setDetailId(place.id)}
+          >
             <Link
               to="/discover"
               className="btn btn-secondary btn-sm"
@@ -440,8 +422,20 @@ export default function FoodStallsAnalyticsPage() {
             >
               Find more on Discover
             </Link>
-          </section>
+          </SuggestionsCard>
         </div>
+      )}
+
+      {detailId && (
+        <PlaceDetailDrawer
+          key={detailId}
+          placeId={detailId}
+          fallbackPlace={suggestions.find((p) => p.id === detailId) ?? null}
+          inTrip={basket.hasPlace(detailId)}
+          tripFull={basket.isFull}
+          onAddToTrip={(place) => basket.addPlace(place)}
+          onClose={() => setDetailId(null)}
+        />
       )}
     </div>
   );

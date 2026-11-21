@@ -1,15 +1,16 @@
 // Food Stalls Analytics: builds the dashboard overview.
 //   Food Places Visualisation -> totals, by area, by cuisine, label counts, scatter points
 //   Food Places Analysis      -> findings sentences (findings.js)
-//   Food Place Suggestion     -> top hidden gems (suggestFoodPlaces)
+//   Food Place Suggestion     -> places that match the user's preferences and past choices
+//                                (suggestion.js, SRD 4.8.4)
 
 const config = require("../../config");
 const model = require("./model");
 const { LABELS, labelHiddenGem } = require("../food-discovery/hiddenGem");
 const { SAMPLE_NOTE } = require("../food-discovery/service");
 const { analyseFoodPlaces } = require("./findings");
+const { suggestFoodPlaces } = require("./suggestion");
 
-const SUGGESTION_COUNT = 5;
 const NO_LABEL = "No label";
 
 const round2 = (x) => (x == null ? null : Math.round(Number(x) * 100) / 100);
@@ -30,6 +31,7 @@ function toAnalysedPlace(row, thresholds) {
     cuisine: row.cuisine,
     isHalal: row.is_halal,
     priceLevel: row.price_level,
+    dietary: row.dietary ?? [],
     avgRating: Number(row.avg_rating),
     reviewCount: row.review_count,
     isSample: row.is_sample === true,
@@ -50,22 +52,55 @@ function averagesFor(places) {
   };
 }
 
-// Food Place Suggestion: best rated hidden gems first; with equal rating, the one with
-// fewer reviews (less known) comes first.
-function suggestFoodPlaces(places, count = SUGGESTION_COUNT) {
-  return places
-    .filter((p) => p.label === LABELS.HIDDEN_GEM)
-    .sort((a, b) => b.avgRating - a.avgRating || a.reviewCount - b.reviewCount)
-    .slice(0, count);
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Past choices: the places in the user's saved trips (sent by the app as pastPlaceIds,
+// because trips are kept on the device until the itinerary API arrives in Phase 2B).
+// Ids that are not UUIDs are ignored, so they never reach the SQL query.
+async function loadPastPlaces(pastPlaceIds = []) {
+  const ids = [...new Set(pastPlaceIds)].filter((id) => UUID_PATTERN.test(id));
+  if (ids.length === 0) return [];
+  const rows = await model.findPlaceFeatures(ids);
+  return rows.map((row) => ({
+    id: row.id,
+    area: row.area,
+    cuisine: row.cuisine,
+    priceLevel: row.price_level,
+  }));
 }
 
-async function getAnalyticsOverview() {
+// query (validated in routes.js): { halal?, maxPrice?, cuisine?, dietary?, pastPlaceIds? }
+const preferencesFrom = ({ halal, maxPrice, cuisine, dietary } = {}) => ({
+  halal,
+  maxPrice,
+  cuisine,
+  dietary,
+});
+
+// GET /api/analytics/suggestions: the "Suggested for you" cards on the Discover page.
+async function getFoodPlaceSuggestions(query = {}) {
   const thresholds = config.hiddenGem;
-  const [summary, areaRows, cuisineRows, placeRows] = await Promise.all([
+  const [placeRows, pastPlaces] = await Promise.all([
+    model.findRatedFoodPlaces(),
+    loadPastPlaces(query.pastPlaceIds),
+  ]);
+  const places = placeRows.map((row) => toAnalysedPlace(row, thresholds));
+  const { basedOn, suggestions } = suggestFoodPlaces(places, {
+    preferences: preferencesFrom(query),
+    pastPlaces,
+  });
+  const result = { basedOn, suggestions, thresholds };
+  return suggestions.some((p) => p.isSample) ? { ...result, note: SAMPLE_NOTE } : result;
+}
+
+async function getAnalyticsOverview(query = {}) {
+  const thresholds = config.hiddenGem;
+  const [summary, areaRows, cuisineRows, placeRows, pastPlaces] = await Promise.all([
     model.summariseRatedFoodPlaces(),
     model.averageRatingBy("area"),
     model.averageRatingBy("cuisine"),
     model.findRatedFoodPlaces(),
+    loadPastPlaces(query.pastPlaceIds),
   ]);
 
   const places = placeRows.map((row) => toAnalysedPlace(row, thresholds));
@@ -86,6 +121,10 @@ async function getAnalyticsOverview() {
   const byArea = areaRows.map(toGroup);
   const byCuisine = cuisineRows.map(toGroup);
   const labelAverages = { hiddenGem: averagesFor(hiddenGems), popular: averagesFor(popular) };
+  const { basedOn, suggestions } = suggestFoodPlaces(places, {
+    preferences: preferencesFrom(query),
+    pastPlaces,
+  });
 
   const overview = {
     totals,
@@ -104,11 +143,12 @@ async function getAnalyticsOverview() {
       reviewCount,
       label,
     })),
-    suggestions: suggestFoodPlaces(places),
+    suggestions,
+    suggestionsBasedOn: basedOn,
     findings: analyseFoodPlaces({ totals, byArea, byCuisine, labelAverages, thresholds }),
     thresholds,
   };
   return totals.samplePlaces > 0 ? { ...overview, note: SAMPLE_NOTE } : overview;
 }
 
-module.exports = { getAnalyticsOverview, suggestFoodPlaces, toAnalysedPlace };
+module.exports = { getAnalyticsOverview, getFoodPlaceSuggestions, toAnalysedPlace, loadPastPlaces };

@@ -33,6 +33,7 @@ MyMakanRoute is a final year project (CAT405, School of Computer Sciences, Unive
   - **Popular:** more than `POPULAR_MIN_REVIEWS` (default 100) reviews, whatever the rating.
   - **No label:** everything else (no rating, 0 reviews, or few reviews with a lower rating).
   - Ranking (`rankFoodPlaces()`): Hidden Gems first, then Popular, then no label; nearest first inside each group, higher rating breaks ties. Thresholds come from config.
+- **Food Place Suggestion** (`food-stalls-analytics/suggestion.js`, SRD 4.8.4, content-based filtering): strict preferences (halal, max price level, dietary) remove places first; each remaining place scores 1 point per match (cuisine, price level, area, Hidden Gem label) against the user's preferences and past choices (stops in saved trips, sent as `pastPlaceIds`); up to 5 highest scores, score 0 and already-visited places left out. No preferences and no trips: best rated Hidden Gems (findings only). Shown on `/analytics` and `/discover`.
 - **Route planner** (Route Planner): the travel graph (`travelGraph.js`) loads the OSM road graph `data/road-graph-penang.json` into memory and snaps each place to its nearest road node (fallback if the file is missing: 4-nearest-neighbour graph, straight line x 1.3). **Dijkstra** (`dijkstra.js`) builds the travel time matrix for all stops. **Ant Colony Optimisation (ACO)** (`antColony.js`) picks the visiting order. Nearest neighbour and brute force (up to 8 stops) are computed for comparison (`routeBaselines.js`). Open route (start at the first or chosen stop, no return). Walking by default (1.4 m/s), driving speeds per road type. ACO uses a seeded random number generator so tests are repeatable.
 
 ## Endpoints (built)
@@ -43,7 +44,8 @@ MyMakanRoute is a final year project (CAT405, School of Computer Sciences, Unive
 | `GET /api/discovery/places?lat&lng&radius&halal&maxPrice&cuisine&dietary&openNow&label&limit` | Food Place Searching + Hidden Gem Highlighting |
 | `GET /api/discovery/places/:id` | Food Place Visualisation |
 | `POST /api/hopping/route` body `{ placeIds (2-10), travelMode, startPlaceId?, seed? }` | Route Planner |
-| `GET /api/analytics/overview` | Food Places Visualisation, Analysis, Suggestion |
+| `GET /api/analytics/overview?halal&maxPrice&cuisine&dietary&pastPlaceIds` | Food Places Visualisation, Analysis, Suggestion |
+| `GET /api/analytics/suggestions?halal&maxPrice&cuisine&dietary&pastPlaceIds` | Food Place Suggestion ("Suggested for you" on Discover) |
 
 Planned (Phase 2B): `/api/auth/register`, `/login`, `/refresh`, profile/preferences and itinerary endpoints. Until then the web app runs login, registration, profile and saved trips in **demo mode** in the browser (`web/src/api/userManagement.js`, `foodHopping.js`).
 
@@ -62,7 +64,7 @@ backend/
     food-discovery/        routes, controller, service, model + hiddenGem.js, openingHours.js
     food-hopping/          routes, controller, service, model + travelGraph.js, dijkstra.js,
                            antColony.js, routeBaselines.js
-    food-stalls-analytics/ routes, controller, service, model + findings.js
+    food-stalls-analytics/ routes, controller, service, model + findings.js, suggestion.js
     user-management/       empty (Phase 2B)
   db/migrations/       001_places.sql, 002_users.sql, 003_itineraries.sql, 004_lock_down_public_api.sql
   db/seeds/            sample-places.json (55 SAMPLE places) + seed.js

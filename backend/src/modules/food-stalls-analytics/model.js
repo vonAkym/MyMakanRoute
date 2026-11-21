@@ -40,7 +40,7 @@ async function averageRatingBy(group) {
 // Every rated place (for labels, the scatter chart and suggestions).
 async function findRatedFoodPlaces() {
   const { rows } = await db.query(`
-    select id, name, area, cuisine, is_halal, price_level,
+    select id, name, area, cuisine, is_halal, price_level, dietary,
            avg_rating::float8 as avg_rating, review_count, is_sample,
            st_y(location::geometry) as lat,
            st_x(location::geometry) as lng
@@ -50,4 +50,22 @@ async function findRatedFoodPlaces() {
   return rows;
 }
 
-module.exports = { summariseRatedFoodPlaces, averageRatingBy, findRatedFoodPlaces, GROUP_COLUMNS };
+// Area, cuisine and price level of the places in the user's saved trips (past choices for
+// Food Place Suggestion). ids are UUIDs checked by the service; sent as one parameter.
+async function findPlaceFeatures(ids) {
+  const { rows } = await db.query(
+    `select id, area, cuisine, price_level
+       from places
+      where id = any($1::uuid[])`,
+    [ids],
+  );
+  return rows;
+}
+
+module.exports = {
+  summariseRatedFoodPlaces,
+  averageRatingBy,
+  findRatedFoodPlaces,
+  findPlaceFeatures,
+  GROUP_COLUMNS,
+};

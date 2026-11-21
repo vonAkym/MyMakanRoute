@@ -129,49 +129,6 @@
   font-weight: 600;
 }
 
-.suggestions {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.suggestion {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-sm);
-  padding: var(--space-sm) 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.suggestion > div:first-child {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.suggestion__name {
-  overflow-wrap: anywhere;
-}
-
-.suggestion__right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-xs);
-  white-space: nowrap;
-}
-
-.suggestion__right .tabular {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.suggestion__star {
-  color: var(--color-accent);
-  fill: var(--color-accent);
-}
-
 @media (min-width: 768px) {
   .bento {
     grid-template-columns: repeat(2, 1fr);

@@ -100,7 +100,8 @@ Built endpoints (all answer `{ success: true, data }`):
 | `GET /api/discovery/places?lat&lng&radius&halal&maxPrice&cuisine&dietary&openNow&label&limit` | Food Discovery: Food Place Searching + Hidden Gem Highlighting |
 | `GET /api/discovery/places/:id` | Food Discovery: Food Place Visualisation (detail panel) |
 | `POST /api/hopping/route` | Food Hopping: Route Planner |
-| `GET /api/analytics/overview` | Food Stalls Analytics: all three submodules |
+| `GET /api/analytics/overview` | Food Stalls Analytics: all three submodules (optional preferences and `pastPlaceIds` shape the suggestions) |
+| `GET /api/analytics/suggestions` | Food Place Suggestion ("Suggested for you" on the Discover page) |
 
 Folder structure (main parts only):
 
@@ -117,7 +118,7 @@ MyMakanRoute/
         food-discovery/      routes, controller, service, model + hiddenGem.js, openingHours.js
         food-hopping/        routes, controller, service, model + travelGraph.js, dijkstra.js,
                              antColony.js, routeBaselines.js
-        food-stalls-analytics/ routes, controller, service, model + findings.js
+        food-stalls-analytics/ routes, controller, service, model + findings.js, suggestion.js
         user-management/     empty (planned, Phase 2B)
     db/
       migrations/            001_places.sql ... 004_lock_down_public_api.sql

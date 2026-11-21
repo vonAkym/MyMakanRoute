@@ -1,6 +1,7 @@
 import { fireEvent, screen, within } from "@testing-library/react";
 import FoodStallsAnalyticsPage from "./FoodStallsAnalyticsPage";
 import { mockFetch, ok, renderWithProviders } from "../test/helpers";
+import { STORAGE_KEYS } from "../lib/storage";
 
 const overview = {
   totals: {
@@ -35,8 +36,11 @@ const overview = {
       avgRating: 4.7,
       reviewCount: 40,
       label: "Hidden Gem",
+      matchScore: 1,
+      matchedOn: ["hidden gem"],
     },
   ],
+  suggestionsBasedOn: "findings",
   findings: [
     "Pulau Tikus has the highest average rating (4.5) among areas with at least 3 rated places.",
     "20 of 55 rated places (36%) are Hidden Gems: rated 4.3 or higher with 100 reviews or fewer.",
@@ -58,9 +62,45 @@ describe("FoodStallsAnalyticsPage", () => {
     expect(screen.getByText("40%")).toBeInTheDocument();
     expect(screen.getByText(/Ratings for sample places are invented/)).toBeInTheDocument();
 
-    const suggestions = screen.getByRole("region", { name: "Suggested hidden gems" });
+    const suggestions = screen.getByRole("region", { name: "Suggested for you" });
     expect(within(suggestions).getByText("Gem Stall")).toBeInTheDocument();
     expect(within(suggestions).getByText("Hidden Gem")).toBeInTheDocument();
+    // No preferences yet: findings only, with an invitation to set preferences (UC-10 2a).
+    expect(within(suggestions).getByRole("link", { name: "Set your preferences" })).toBeVisible();
+  });
+
+  test("sends saved preferences and past trip stops, and explains each match", async () => {
+    window.localStorage.setItem(
+      STORAGE_KEYS.preferences,
+      JSON.stringify({ halalOnly: true, maxBudget: 2, cuisines: ["malay"], dietary: [] }),
+    );
+    window.localStorage.setItem(
+      STORAGE_KEYS.savedTrips,
+      JSON.stringify([{ id: "t1", route: { stops: [{ id: "s1" }, { id: "s2" }] } }]),
+    );
+    const fetchFn = mockFetch({
+      "GET /api/analytics/overview": ok({
+        ...overview,
+        suggestionsBasedOn: "preferences",
+        suggestions: [{ ...overview.suggestions[0], matchedOn: ["cuisine", "hidden gem"] }],
+      }),
+    });
+    renderWithProviders(<FoodStallsAnalyticsPage />);
+
+    const suggestions = await screen.findByRole("region", { name: "Suggested for you" });
+    expect(within(suggestions).getByText("Matches your cuisine, hidden gem")).toBeVisible();
+    const url = new URL(fetchFn.mock.calls[0][0]);
+    expect(url.searchParams.get("halal")).toBe("true");
+    expect(url.searchParams.get("maxPrice")).toBe("2");
+    expect(url.searchParams.get("cuisine")).toBe("malay");
+    expect(url.searchParams.get("pastPlaceIds")).toBe("s1,s2");
+  });
+
+  test("no matching places -> the suggestion section is hidden", async () => {
+    mockFetch({ "GET /api/analytics/overview": ok({ ...overview, suggestions: [] }) });
+    renderWithProviders(<FoodStallsAnalyticsPage />);
+    await screen.findByRole("region", { name: "Findings" });
+    expect(screen.queryByRole("region", { name: "Suggested for you" })).not.toBeInTheDocument();
   });
 
   test("each chart has a data table fallback", async () => {
