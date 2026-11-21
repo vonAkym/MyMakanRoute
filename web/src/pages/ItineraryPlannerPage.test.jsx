@@ -136,7 +136,10 @@ describe("ItineraryPlannerPage", () => {
 
     // Request body sent to the backend.
     const body = JSON.parse(fetchFn.mock.calls[0][1].body);
-    expect(body).toEqual({ placeIds: [A, B, C], travelMode: "walking", startPlaceId: A });
+    expect(body).toMatchObject({ placeIds: [A, B, C], travelMode: "walking", startPlaceId: A });
+    // Trip day and start time for the opening hours (default: today, next quarter hour).
+    expect(body.day).toMatch(/^(mon|tue|wed|thu|fri|sat|sun)$/);
+    expect(body.startTime).toMatch(/^\d\d:(00|15|30|45)$/);
 
     // Stops are shown in the order ACO chose, with the legs on the map.
     const stops = screen.getByRole("region", { name: /stops/i });
@@ -150,6 +153,55 @@ describe("ItineraryPlannerPage", () => {
     expect(within(summary).getByText("720 m")).toBeInTheDocument();
     // Per-leg time and distance between stops.
     expect(within(stops).getByText("5 min · 400 m")).toBeInTheDocument();
+  });
+
+  test("with opening hours: sends the chosen start, shows arrival times and closed stops", async () => {
+    putInBasket();
+    const timetable = {
+      ...routeResponse,
+      order: routeResponse.order.map((p, k) => ({
+        ...p,
+        arrivalTime: ["09:00", "09:35", "10:09"][k],
+        waitS: k === 1 ? 600 : 0,
+        closedOnArrival: k === 2,
+        hasOpeningHours: true,
+      })),
+      schedule: {
+        day: "sat",
+        startTime: "09:00",
+        endTime: "10:09",
+        visitMinutes: 30,
+        durationS: 4140,
+        waitS: 600,
+        closedStops: 1,
+        usesOpeningHours: true,
+      },
+      comparison: {
+        aco: { ...routeResponse.comparison.aco, durationS: 4140, closedStops: 1 },
+        nearestNeighbour: { ...routeResponse.comparison.nearestNeighbour, closedStops: 2 },
+        bruteForce: { ...routeResponse.comparison.bruteForce, durationS: 4140, closedStops: 1 },
+      },
+    };
+    const fetchFn = mockFetch({ "POST /api/hopping/route": ok(timetable) });
+    renderWithProviders(<ItineraryPlannerPage />);
+
+    fireEvent.change(screen.getByLabelText("Day"), { target: { value: "sat" } });
+    fireEvent.change(screen.getByLabelText("Start time"), { target: { value: "09:00" } });
+    fireEvent.click(screen.getByRole("button", { name: "Plan route" }));
+    const card = await screen.findByRole("region", { name: "Algorithm comparison" });
+
+    const body = JSON.parse(fetchFn.mock.calls[0][1].body);
+    expect(body).toMatchObject({ day: "sat", startTime: "09:00" });
+    const stops = screen.getByRole("region", { name: /stops/i });
+    expect(within(stops).getByText(/Arrive 09:35/)).toHaveTextContent("wait 10 min until it opens");
+    expect(within(stops).getByText("Closed when you arrive")).toBeInTheDocument();
+    expect(screen.getByText(/1 stop is closed when you/)).toBeInTheDocument();
+    expect(within(card).getByText(/ACO matched the best timetable/)).toBeInTheDocument();
+    expect(within(card).getByText(/would reach 2 stops after closing time/)).toBeInTheDocument();
+
+    // Changing the start time makes the plan out of date.
+    fireEvent.change(screen.getByLabelText("Start time"), { target: { value: "08:00" } });
+    expect(screen.getByText(/You changed the trip/)).toBeInTheDocument();
   });
 
   test("moving a stop marks the route as out of date; saving stores it on this device", async () => {

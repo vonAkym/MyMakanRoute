@@ -1,14 +1,17 @@
 // Food Hopping module page (/trip):
-//   Itinerary Planner                    -> trip basket, start stop, travel mode
-//   Route Planner                        -> POST /api/hopping/route (Dijkstra + ACO), map, legs
+//   Itinerary Planner                    -> trip basket, start stop, travel mode, day + start time
+//   Route Planner                        -> POST /api/hopping/route (Dijkstra + ACO with opening
+//                                           hours as time windows), map, legs, timetable
 //   Itinerary Review and Customisation   -> remove, move up/down, re-plan, save
 
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
+  AlertTriangle,
   ArrowDown,
   ArrowUp,
   Car,
+  Clock,
   Footprints,
   Route as RouteIcon,
   Save,
@@ -49,6 +52,37 @@ function routeErrorHint(error) {
   }
 }
 
+const DAYS = [
+  ["mon", "Monday"],
+  ["tue", "Tuesday"],
+  ["wed", "Wednesday"],
+  ["thu", "Thursday"],
+  ["fri", "Friday"],
+  ["sat", "Saturday"],
+  ["sun", "Sunday"],
+];
+
+// Today and the next quarter hour in Malaysian time, e.g. { day: "sat", time: "11:45" }.
+export function defaultStart(now = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kuala_Lumpur",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const get = (type) => parts.find((p) => p.type === type).value;
+  const minutes = Math.min(
+    Math.ceil((Number(get("hour")) * 60 + Number(get("minute"))) / 15) * 15,
+    23 * 60 + 45,
+  );
+  const pad = (n) => String(n).padStart(2, "0");
+  return {
+    day: get("weekday").toLowerCase().slice(0, 3),
+    time: `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}`,
+  };
+}
+
 const defaultTripName = () =>
   `Food hop ${new Date().toLocaleDateString("en-MY", { day: "numeric", month: "short" })}`;
 
@@ -58,6 +92,7 @@ export default function ItineraryPlannerPage() {
   const stops = basket.places;
 
   const [travelMode, setTravelMode] = useState("walking");
+  const [start, setStart] = useState(defaultStart);
   const [startId, setStartId] = useState(stops[0]?.id ?? "");
   const [plan, setPlan] = useState({ status: "idle", route: null, error: null, mode: null });
   const [tripName, setTripName] = useState(defaultTripName);
@@ -68,10 +103,12 @@ export default function ItineraryPlannerPage() {
   const validStartId = stops.some((s) => s.id === startId) ? startId : (stops[0]?.id ?? "");
 
   const route = plan.route;
-  // The route is out of date when the stops, their order or the travel mode changed.
+  // Everything the route depends on apart from the stops.
+  const settingsKey = `${travelMode}|${start.day}|${start.time}`;
+  // The route is out of date when the stops, their order, the travel mode or the start changed.
   const stale =
     !route ||
-    plan.mode !== travelMode ||
+    plan.mode !== settingsKey ||
     route.stops.map((s) => s.id).join() !== stops.map((s) => s.id).join();
 
   const legsByFrom = useMemo(() => {
@@ -89,10 +126,12 @@ export default function ItineraryPlannerPage() {
         placeIds: stops.map((s) => s.id),
         travelMode,
         startPlaceId: validStartId || undefined,
+        day: start.day,
+        startTime: start.time,
       });
       // Show the stops in the order ACO chose.
       basket.setOrder(result.stops.map((s) => s.id));
-      setPlan({ status: "ready", route: result, error: null, mode: travelMode });
+      setPlan({ status: "ready", route: result, error: null, mode: settingsKey });
       setAnnouncement(
         `Route planned: ${result.stops.length} stops, ${formatDuration(result.totalTimeS)} in total.`,
       );
@@ -178,6 +217,40 @@ export default function ItineraryPlannerPage() {
                 ))}
               </select>
             </div>
+            <div className="trip-start row">
+              <div className="field">
+                <label htmlFor="trip-day">Day</label>
+                <select
+                  id="trip-day"
+                  className="input"
+                  value={start.day}
+                  onChange={(e) => setStart((s) => ({ ...s, day: e.target.value }))}
+                >
+                  {DAYS.map(([key, name]) => (
+                    <option key={key} value={key}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="field">
+                <label htmlFor="trip-time">Start time</label>
+                <input
+                  id="trip-time"
+                  type="time"
+                  className="input"
+                  step={300}
+                  value={start.time}
+                  onChange={(e) =>
+                    e.target.value && setStart((s) => ({ ...s, time: e.target.value }))
+                  }
+                />
+              </div>
+            </div>
+            <p className="field-hint">
+              ACO uses the opening hours: it plans an order that reaches each stall while it is
+              open.
+            </p>
             <fieldset>
               <legend>Travel mode</legend>
               <div className="segmented">
@@ -238,6 +311,7 @@ export default function ItineraryPlannerPage() {
             <ol className="stop-list">
               {stops.map((stop, index) => {
                 const leg = legsByFrom.get(stop.id);
+                const timed = route && !stale ? route.stops.find((r) => r.id === stop.id) : null;
                 return (
                   <li key={stop.id} className="stop-item">
                     <div className="stop">
@@ -254,6 +328,20 @@ export default function ItineraryPlannerPage() {
                           {stop.id === validStartId && <span className="stop__start">Start</span>}
                           <LabelBadge label={stop.label} size="sm" />
                         </span>
+                        {timed?.arrivalTime && (
+                          <span className="stop__time">
+                            <Clock size={14} aria-hidden="true" /> Arrive {timed.arrivalTime}
+                            {timed.waitS >= 60 &&
+                              !timed.closedOnArrival &&
+                              ` · wait ${Math.round(timed.waitS / 60)} min until it opens`}
+                            {timed.closedOnArrival && (
+                              <span className="stop__closed">
+                                <AlertTriangle size={14} aria-hidden="true" /> Closed when you
+                                arrive
+                              </span>
+                            )}
+                          </span>
+                        )}
                       </div>
                       <div className="stop__actions">
                         <button
@@ -330,11 +418,27 @@ export default function ItineraryPlannerPage() {
                     <dt>Stops</dt>
                     <dd className="tabular">{route.stops.length}</dd>
                   </div>
+                  {route.schedule && (
+                    <div>
+                      <dt>Trip ends</dt>
+                      <dd className="tabular">{route.schedule.endTime}</dd>
+                    </div>
+                  )}
                 </dl>
                 <p className="muted small">
-                  {route.travelMode === "walking" ? "Walking" : "Driving"} time only, not counting
-                  time spent eating. Open route: it starts at stop 1 and does not return.
+                  Total time is {route.travelMode === "walking" ? "walking" : "driving"} time only.
+                  {route.schedule &&
+                    ` The timetable adds ${route.schedule.visitMinutes} min of eating at each stop` +
+                      ` and any waiting until a stall opens, starting at ${route.schedule.startTime}.`}{" "}
+                  Open route: it starts at stop 1 and does not return.
                 </p>
+                {route.schedule?.closedStops > 0 && (
+                  <p className="notice" role="status">
+                    <AlertTriangle size={18} aria-hidden="true" /> {route.schedule.closedStops}{" "}
+                    {route.schedule.closedStops === 1 ? "stop is" : "stops are"} closed when you
+                    arrive. Try an earlier start time, another day, or remove the stop.
+                  </p>
+                )}
 
                 <div className="field" style={{ marginTop: "var(--space-md)" }}>
                   <label htmlFor="trip-name">Trip name</label>
@@ -370,6 +474,7 @@ export default function ItineraryPlannerPage() {
                 comparison={route.comparison}
                 algorithm={route.algorithm}
                 graph={route.graph}
+                schedule={route.schedule}
               />
             </>
           )}

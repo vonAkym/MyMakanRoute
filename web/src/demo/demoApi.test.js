@@ -140,6 +140,20 @@ describe("Route Planner (demo)", () => {
     expect(data.comparison.bruteForce).toBeNull();
   });
 
+  test("uses opening hours as time windows and returns a timetable", async () => {
+    const data = await route({ placeIds: ids.slice(0, 6), day: "sat", startTime: "08:00" });
+    expect(data.algorithm.name).toBe("ant-colony-optimisation-time-windows");
+    expect(data.schedule).toMatchObject({ day: "sat", startTime: "08:00", usesOpeningHours: true });
+    expect(data.order[0].arrivalTime).toBe("08:00");
+    expect(data.order.every((p) => /^\d\d:\d\d$/.test(p.arrivalTime))).toBe(true);
+    // Brute force is exact for the same goal, so ACO never has fewer closed stops.
+    const { aco, bruteForce } = data.comparison;
+    expect(bruteForce.closedStops).toBeLessThanOrEqual(aco.closedStops);
+    await expect(route({ placeIds: ids.slice(0, 2), startTime: "8am" })).rejects.toMatchObject({
+      status: 400,
+    });
+  });
+
   test("driving is faster than walking on the same estimated distances", () => {
     const stops = DEMO_PLACES.slice(0, 4);
     const walk = buildTimeMatrix(stops, "walking");

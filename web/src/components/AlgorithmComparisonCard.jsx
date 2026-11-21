@@ -8,6 +8,35 @@ import "./AlgorithmComparisonCard.css";
 // Two totals count as equal when they differ by less than a second (rounding).
 const SAME_SECONDS = 1;
 
+// With opening hours, a method is judged first by stops reached after closing time, then by
+// the whole trip time (travel + waiting + eating).
+function openingHoursSentences(aco, nn, brute) {
+  const sentences = [];
+  if (brute) {
+    const same =
+      aco.closedStops === brute.closedStops && aco.durationS - brute.durationS < SAME_SECONDS;
+    sentences.push(
+      same
+        ? "ACO matched the best timetable found by brute force."
+        : `ACO's timetable is ${toMinutes(aco.durationS - brute.durationS)} min longer than the best one.`,
+    );
+  } else {
+    sentences.push("Brute force was skipped: it only runs for up to 8 stops.");
+  }
+  if (nn && nn.closedStops > aco.closedStops) {
+    sentences.push(
+      `Nearest neighbour ignores opening hours and would reach ${nn.closedStops} ` +
+        `${nn.closedStops === 1 ? "stop" : "stops"} after closing time.`,
+    );
+  }
+  sentences.push(
+    aco.closedStops === 0
+      ? "ACO reaches every stop while it is open."
+      : `${aco.closedStops} ${aco.closedStops === 1 ? "stop is" : "stops are"} still closed on arrival. Try another start time or day.`,
+  );
+  return sentences;
+}
+
 function comparisonSentence(aco, nn, brute) {
   const sentences = [];
   if (brute) {
@@ -31,9 +60,10 @@ function comparisonSentence(aco, nn, brute) {
   return sentences;
 }
 
-export default function AlgorithmComparisonCard({ comparison, algorithm, graph }) {
+export default function AlgorithmComparisonCard({ comparison, algorithm, graph, schedule }) {
   const { aco, nearestNeighbour: nn, bruteForce: brute } = comparison ?? {};
   if (!aco) return null;
+  const withHours = schedule?.usesOpeningHours === true;
 
   const rows = [
     {
@@ -56,8 +86,14 @@ export default function AlgorithmComparisonCard({ comparison, algorithm, graph }
     },
   ];
   const longest = Math.max(...rows.filter((r) => r.result).map((r) => r.result.totalTimeS), 1);
-  const sentences = comparisonSentence(aco, nn, brute);
-  const matched = brute && aco.totalTimeS - brute.totalTimeS < SAME_SECONDS;
+  const sentences = withHours
+    ? openingHoursSentences(aco, nn, brute)
+    : comparisonSentence(aco, nn, brute);
+  const matched = withHours
+    ? Boolean(brute) &&
+      aco.closedStops === brute.closedStops &&
+      aco.durationS - brute.durationS < SAME_SECONDS
+    : brute && aco.totalTimeS - brute.totalTimeS < SAME_SECONDS;
 
   return (
     <section className="card algo-card" aria-labelledby="algo-title">
@@ -67,6 +103,8 @@ export default function AlgorithmComparisonCard({ comparison, algorithm, graph }
       </h2>
       <p className="muted small">
         Total travel time of the visiting order each method found (same stops, same start).
+        {withHours &&
+          " With opening hours, ACO and brute force also make sure each stall is open when you arrive."}
       </p>
 
       <table className="algo-table">
@@ -75,6 +113,7 @@ export default function AlgorithmComparisonCard({ comparison, algorithm, graph }
           <tr>
             <th scope="col">Method</th>
             <th scope="col">Total time</th>
+            {withHours && <th scope="col">Closed on arrival</th>}
             <th scope="col" className="algo-table__bar-col">
               <span className="visually-hidden">Bar</span>
             </th>
@@ -90,6 +129,11 @@ export default function AlgorithmComparisonCard({ comparison, algorithm, graph }
               <td className="tabular algo-table__value">
                 {row.result ? `${toMinutes(row.result.totalTimeS)} min` : "Skipped"}
               </td>
+              {withHours && (
+                <td className="tabular algo-table__value">
+                  {row.result ? row.result.closedStops : "–"}
+                </td>
+              )}
               <td className="algo-table__bar-col" aria-hidden="true">
                 {row.result && (
                   <span

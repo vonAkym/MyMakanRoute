@@ -1,6 +1,7 @@
 // DEMO COPY of the Route Planner (backend/src/modules/food-hopping/service.js, dijkstra.js and
 // the fallback graph in travelGraph.js), as an ES module. Used only by the GitHub Pages demo.
 //
+// Opening hours are used as time windows, as in the backend (timeWindows.js).
 // The real road map (data/road-graph-penang.json) is too big to ship to the browser, so the
 // demo always uses the backend's FALLBACK travel graph: each stop is linked to its 4 nearest
 // stops, and the road distance is estimated as straight-line distance x 1.3. Dijkstra, Ant
@@ -9,7 +10,20 @@
 import { ApiError } from "../api/client.js";
 import { DEMO_PLACES, haversineMeters } from "./places.js";
 import { planVisitingOrderACO, DEFAULT_ACO } from "./antColony.js";
-import { nearestNeighbourOrder, bruteForceOrder, BRUTE_FORCE_MAX_STOPS } from "./routeBaselines.js";
+import {
+  nearestNeighbourOrder,
+  bruteForceOrder,
+  bruteForceScheduleOrder,
+  BRUTE_FORCE_MAX_STOPS,
+} from "./routeBaselines.js";
+import {
+  windowsFor,
+  simulateSchedule,
+  localDayAndSeconds,
+  formatClock,
+  toSeconds,
+  DEFAULT_VISIT_S,
+} from "./timeWindows.js";
 
 export const MIN_STOPS = 2;
 export const MAX_STOPS = 10;
@@ -112,13 +126,22 @@ function checkBody(body) {
   if (body.startPlaceId !== undefined && !ids.includes(body.startPlaceId)) {
     fail("startPlaceId must be one of placeIds");
   }
+  if (
+    body.day !== undefined &&
+    !["mon", "tue", "wed", "thu", "fri", "sat", "sun"].includes(body.day)
+  ) {
+    fail("day must be mon to sun");
+  }
+  if (body.startTime !== undefined && toSeconds(body.startTime) === null) {
+    fail("startTime must look like 09:30");
+  }
   return travelMode;
 }
 
 // Same answer shape as POST /api/hopping/route.
 export function planRoute(body) {
   const travelMode = checkBody(body);
-  const { placeIds, startPlaceId, seed } = body;
+  const { placeIds, startPlaceId, seed, day, startTime, visitMinutes } = body;
 
   // 1. Places, in the order the user chose them.
   const byId = new Map(DEMO_PLACES.map((p) => [p.id, p]));
@@ -141,6 +164,7 @@ export function planRoute(body) {
       avg_rating: p.avg_rating,
       review_count: p.review_count,
       is_sample: true,
+      opening_hours: p.opening_hours,
     };
   });
   const startIndex = startPlaceId ? placeIds.indexOf(startPlaceId) : 0;
@@ -161,14 +185,31 @@ export function planRoute(body) {
     });
   }
 
-  // 3. ACO order, 4. baselines for comparison.
+  // 3. Opening hours as time windows (same as the backend service).
+  const now = localDayAndSeconds();
+  const schedule = {
+    startS: startTime ? toSeconds(startTime) : now.seconds,
+    visitS: visitMinutes ? visitMinutes * 60 : DEFAULT_VISIT_S,
+    windows: places.map((p) => windowsFor(p.opening_hours, day ?? now.day)),
+  };
+  const useTimeWindows = schedule.windows.some((w) => w !== null);
+
+  // 4. ACO order, 5. baselines for comparison.
   const aco = timed(() =>
-    planVisitingOrderACO(matrix.timeS, { startIndex, seed: seed ?? DEFAULT_ACO.seed }),
+    planVisitingOrderACO(matrix.timeS, {
+      startIndex,
+      seed: seed ?? DEFAULT_ACO.seed,
+      schedule: useTimeWindows ? schedule : undefined,
+    }),
   );
   const nn = timed(() => nearestNeighbourOrder(matrix.timeS, startIndex));
   const brute =
     places.length <= BRUTE_FORCE_MAX_STOPS
-      ? timed(() => bruteForceOrder(matrix.timeS, startIndex))
+      ? timed(() =>
+          useTimeWindows
+            ? bruteForceScheduleOrder(matrix.timeS, startIndex, schedule)
+            : bruteForceOrder(matrix.timeS, startIndex),
+        )
       : null;
 
   // 5. Legs of the ACO order.
@@ -189,16 +230,40 @@ export function planRoute(body) {
     .slice(1)
     .reduce((sum, j, k) => sum + matrix.distanceM[order[k]][j], 0);
 
-  const summary = (r, ms) => ({
-    order: r.order.map((i) => places[i].id),
-    totalTimeS: round1(r.totalTime),
-    runtimeMs: ms,
-  });
+  const summary = (r, ms) => {
+    const sim = simulateSchedule(matrix.timeS, r.order, schedule);
+    return {
+      order: r.order.map((i) => places[i].id),
+      totalTimeS: round1(r.totalTime),
+      durationS: round1(sim.durationS),
+      waitS: round1(sim.waitS),
+      closedStops: sim.closedStops,
+      runtimeMs: ms,
+    };
+  };
   const { params } = aco.result;
+  const timetable = simulateSchedule(matrix.timeS, order, schedule);
 
   return {
     travelMode,
-    order: order.map((i) => ({ ...places[i], snapDistanceM: 0 })),
+    order: order.map((i, k) => ({
+      ...places[i],
+      snapDistanceM: 0,
+      arrivalTime: formatClock(timetable.stops[k].arriveS),
+      waitS: round1(timetable.stops[k].waitS),
+      closedOnArrival: timetable.stops[k].closed,
+      hasOpeningHours: schedule.windows[i] !== null,
+    })),
+    schedule: {
+      day: day ?? now.day,
+      startTime: formatClock(schedule.startS),
+      visitMinutes: schedule.visitS / 60,
+      endTime: formatClock(schedule.startS + timetable.durationS),
+      durationS: round1(timetable.durationS),
+      waitS: round1(timetable.waitS),
+      closedStops: timetable.closedStops,
+      usesOpeningHours: useTimeWindows,
+    },
     legs,
     totalTimeS: round1(aco.result.totalTime),
     totalDistanceM: Math.round(totalDistanceM),
@@ -208,7 +273,7 @@ export function planRoute(body) {
       bruteForce: brute ? summary(brute.result, brute.ms) : null,
     },
     algorithm: {
-      name: "ant-colony-optimisation",
+      name: useTimeWindows ? "ant-colony-optimisation-time-windows" : "ant-colony-optimisation",
       ants: params.ants,
       iterations: params.iterations,
       alpha: params.alpha,

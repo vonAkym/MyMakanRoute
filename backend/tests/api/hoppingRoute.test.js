@@ -133,3 +133,51 @@ describe("POST /api/hopping/route", () => {
     expect(res.body.error.code).toBe("PLACE_NOT_ON_ROAD_GRAPH");
   });
 });
+
+describe("POST /api/hopping/route with opening hours (time windows)", () => {
+  // Stall E closes at 09:25; the others are open all day.
+  const withHours = PLACES.map((p) => ({
+    ...p,
+    opening_hours:
+      p.name === "Stall E" ? { mon: [["09:00", "09:25"]] } : { mon: [["08:00", "22:00"]] },
+  }));
+
+  beforeEach(() => {
+    model.findPlacesForRoute.mockImplementation(async (ids) =>
+      withHours.filter((p) => ids.includes(p.id)),
+    );
+  });
+
+  test("visits the stall that closes soon early, with a timetable", async () => {
+    const res = await post({ placeIds: ALL_IDS, day: "mon", startTime: "09:00", visitMinutes: 15 });
+    expect(res.status).toBe(200);
+    const data = res.body.data;
+    expect(data.algorithm.name).toBe("ant-colony-optimisation-time-windows");
+    expect(data.schedule).toMatchObject({
+      day: "mon",
+      startTime: "09:00",
+      visitMinutes: 15,
+      closedStops: 0,
+      usesOpeningHours: true,
+    });
+    expect(data.order[0]).toMatchObject({ arrivalTime: "09:00", closedOnArrival: false });
+    expect(data.order[1].name).toBe("Stall E");
+    expect(data.order.every((p) => p.closedOnArrival === false)).toBe(true);
+    expect(data.comparison.aco.closedStops).toBe(0);
+    expect(data.comparison.bruteForce.closedStops).toBe(0);
+    expect(data.comparison.bruteForce.durationS).toBeLessThanOrEqual(data.comparison.aco.durationS);
+  });
+
+  test("a stall that is closed all day is flagged as closed on arrival", async () => {
+    const res = await post({ placeIds: ALL_IDS.slice(0, 2), day: "tue", startTime: "10:00" });
+    expect(res.status).toBe(200);
+    expect(res.body.data.schedule.closedStops).toBe(2);
+    expect(res.body.data.order.every((p) => p.closedOnArrival)).toBe(true);
+  });
+
+  test("bad start time or day -> 400 VALIDATION_ERROR", async () => {
+    const res = await post({ placeIds: ALL_IDS.slice(0, 2), startTime: "9am", day: "funday" });
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_ERROR");
+  });
+});

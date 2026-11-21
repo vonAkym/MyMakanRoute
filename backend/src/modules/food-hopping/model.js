@@ -9,7 +9,7 @@ async function findPlacesForRoute(placeIds) {
     `select id, name,
             st_y(location::geometry) as lat,
             st_x(location::geometry) as lng,
-            cuisine, avg_rating, review_count, is_sample
+            cuisine, avg_rating, review_count, is_sample, opening_hours
        from places
       where id = any($1::uuid[])`,
     [placeIds],

@@ -31,6 +31,14 @@ const planRouteSchema = z
       .min(0)
       .max(2 ** 32 - 1)
       .optional(),
+    // Trip day and start time (Malaysian time) for the opening hours. Default: now.
+    day: z.enum(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]).optional(),
+    startTime: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "startTime must look like 09:30")
+      .optional(),
+    // Minutes spent eating at each stop.
+    visitMinutes: z.number().int().min(5).max(180).optional(),
   })
   .strict()
   .refine((b) => b.startPlaceId === undefined || b.placeIds.includes(b.startPlaceId), {

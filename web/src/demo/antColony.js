@@ -15,8 +15,18 @@
 //
 // Route type: OPEN route. It starts at startIndex, visits every stop exactly once and does not
 // return to the start (PLAN Q6). Input is the n x n travel time matrix (seconds) from Dijkstra.
+//
+// With opening hours (options.schedule, see timeWindows.js) the ants also keep a clock while
+// they build an order. A stop that is closed when the ant would arrive becomes much less
+// attractive, a stop that closes soon becomes more attractive, and the quality of an order is
+// its schedule cost (trip duration + penalties for closed stops) instead of travel time only.
+// This is the travelling salesman problem with time windows.
 
 import { orderTime, nearestNeighbourOrder } from "./routeBaselines.js";
+import { arriveAt, simulateSchedule, DEFAULT_VISIT_S } from "./timeWindows.js";
+
+// Attractiveness multiplier when the stop would be closed on arrival.
+const CLOSED_ATTRACTIVENESS = 0.05;
 
 // Small seeded random number generator (mulberry32). Same seed -> same numbers, so results
 // are repeatable in tests and in the demo. Returns a function giving numbers in [0, 1).
@@ -70,6 +80,22 @@ function rouletteSelect(weights, random) {
   return weights.length - 1; // rounding safety
 }
 
+// Heuristic with opening hours, for the move current -> j when the ant's clock shows clockS:
+// prefer stops that are reached soon (travel + waiting), that close soon (urgency between
+// 1 and 2: a stop closing within the hour counts almost double), and avoid closed stops.
+function timeWindowHeuristic(travelS, windows, clockS) {
+  const arrival = arriveAt(windows, clockS + travelS);
+  const base = 1 / Math.max(travelS + arrival.waitS, 1);
+  if (arrival.closed) return base * CLOSED_ATTRACTIVENESS;
+  return base * (1 + 3600 / (3600 + arrival.slackS));
+}
+
+// The ant's clock after arriving at stop j (waiting if needed, then eating there).
+function advanceClock(clockS, travelS, windows, visitS) {
+  const arrival = arriveAt(windows, clockS + travelS);
+  return clockS + travelS + (arrival.closed ? 0 : arrival.waitS + visitS);
+}
+
 // One ant builds a complete open order starting at startIndex.
 function buildAntOrder(matrix, pheromone, heuristic, startIndex, params, random) {
   const n = matrix.length;
@@ -77,6 +103,11 @@ function buildAntOrder(matrix, pheromone, heuristic, startIndex, params, random)
   const order = [startIndex];
   visited[startIndex] = 1;
   let current = startIndex;
+  const schedule = params.schedule;
+  const visitS = schedule?.visitS ?? DEFAULT_VISIT_S;
+  let clockS = schedule
+    ? advanceClock(schedule.startS, 0, schedule.windows[startIndex], visitS)
+    : 0;
 
   while (order.length < n) {
     const candidates = [];
@@ -84,10 +115,17 @@ function buildAntOrder(matrix, pheromone, heuristic, startIndex, params, random)
     for (let j = 0; j < n; j++) {
       if (visited[j]) continue;
       candidates.push(j);
-      // Attractiveness = pheromone^alpha * (1/time)^beta
-      weights.push(pheromone[current][j] ** params.alpha * heuristic[current][j] ** params.beta);
+      // Attractiveness = pheromone^alpha * heuristic^beta (heuristic = 1/time, or the
+      // opening-hours version above).
+      const eta = schedule
+        ? timeWindowHeuristic(matrix[current][j], schedule.windows[j], clockS)
+        : heuristic[current][j];
+      weights.push(pheromone[current][j] ** params.alpha * eta ** params.beta);
     }
     const next = candidates[rouletteSelect(weights, random)];
+    if (schedule) {
+      clockS = advanceClock(clockS, matrix[current][next], schedule.windows[next], visitS);
+    }
     order.push(next);
     visited[next] = 1;
     current = next;
@@ -95,12 +133,21 @@ function buildAntOrder(matrix, pheromone, heuristic, startIndex, params, random)
   return order;
 }
 
-// Main ACO function. Returns { order, totalTime, iterationsRun, bestFoundAtIteration, params }.
+// Quality of an order: schedule cost with opening hours, otherwise total travel time.
+function orderCost(matrix, order, schedule) {
+  return schedule ? simulateSchedule(matrix, order, schedule).cost : orderTime(matrix, order);
+}
+
+// Main ACO function. options: ACO settings + startIndex + optional schedule.
+// Returns { order, totalTime (travel only), cost, iterationsRun, bestFoundAtIteration, params }.
 function planVisitingOrderACO(timeMatrix, options = {}) {
   const n = timeMatrix.length;
   const startIndex = options.startIndex ?? 0;
   const params = { ...DEFAULT_ACO, ants: defaultAnts(n), ...stripUndefined(options) };
   delete params.startIndex;
+  const schedule = params.schedule ?? null;
+  delete params.schedule; // keep params printable (it is returned to the app)
+  const cost = (order) => orderCost(timeMatrix, order, schedule);
 
   // Trivial cases: with 1 or 2 stops there is only one possible open order.
   if (n <= 2) {
@@ -108,6 +155,7 @@ function planVisitingOrderACO(timeMatrix, options = {}) {
     return {
       order,
       totalTime: orderTime(timeMatrix, order),
+      cost: cost(order),
       iterationsRun: 0,
       bestFoundAtIteration: 0,
       params,
@@ -122,7 +170,7 @@ function planVisitingOrderACO(timeMatrix, options = {}) {
 
   // Starting pheromone: as if every ant had walked the nearest-neighbour order,
   // ants * q / L_nn. This keeps the pheromone on the same scale as later deposits.
-  const nnTime = Math.max(nearestNeighbourOrder(timeMatrix, startIndex).totalTime, 1);
+  const nnTime = Math.max(cost(nearestNeighbourOrder(timeMatrix, startIndex).order), 1);
   const tau0 = (params.ants * params.q) / nnTime;
   const pheromone = Array.from({ length: n }, () => new Array(n).fill(tau0));
 
@@ -137,8 +185,15 @@ function planVisitingOrderACO(timeMatrix, options = {}) {
     // 1. Every ant builds an order.
     const antOrders = [];
     for (let a = 0; a < params.ants; a++) {
-      const order = buildAntOrder(timeMatrix, pheromone, heuristic, startIndex, params, random);
-      const time = orderTime(timeMatrix, order);
+      const order = buildAntOrder(
+        timeMatrix,
+        pheromone,
+        heuristic,
+        startIndex,
+        { ...params, schedule },
+        random,
+      );
+      const time = cost(order);
       antOrders.push({ order, time });
       if (time < bestTime) {
         bestTime = time;
@@ -183,7 +238,14 @@ function planVisitingOrderACO(timeMatrix, options = {}) {
     if (iter - bestFoundAtIteration >= params.stagnationLimit) break;
   }
 
-  return { order: bestOrder, totalTime: bestTime, iterationsRun, bestFoundAtIteration, params };
+  return {
+    order: bestOrder,
+    totalTime: orderTime(timeMatrix, bestOrder),
+    cost: bestTime,
+    iterationsRun,
+    bestFoundAtIteration,
+    params,
+  };
 }
 
 function stripUndefined(obj) {

@@ -16,6 +16,11 @@ function toStop(place) {
     avgRating: place.avg_rating ?? place.avgRating ?? null,
     reviewCount: place.review_count ?? place.reviewCount ?? null,
     isSample: (place.is_sample ?? place.isSample) === true,
+    // Timetable with opening hours (time windows): "09:40", seconds waited, closed or not.
+    arrivalTime: place.arrivalTime ?? null,
+    waitS: place.waitS ?? 0,
+    closedOnArrival: place.closedOnArrival === true,
+    hasOpeningHours: place.hasOpeningHours === true,
   };
 }
 
@@ -25,12 +30,14 @@ function toResult(result) {
   return {
     order: result.order,
     totalTimeS: result.totalTimeS,
+    durationS: result.durationS ?? null,
+    closedStops: result.closedStops ?? 0,
     runtimeMs: result.runtimeMs ?? null,
   };
 }
 
-// Backend route -> { travelMode, stops, legs, totalTimeS, totalDistanceM, comparison,
-//                    algorithm, graph }
+// Backend route -> { travelMode, stops, legs, totalTimeS, totalDistanceM, schedule,
+//                    comparison, algorithm, graph }
 export function toPlannedRoute(data) {
   return {
     travelMode: data.travelMode,
@@ -45,6 +52,9 @@ export function toPlannedRoute(data) {
     })),
     totalTimeS: data.totalTimeS,
     totalDistanceM: data.totalDistanceM,
+    // { day, startTime, endTime, visitMinutes, durationS, waitS, closedStops,
+    //   usesOpeningHours } or null (older answers)
+    schedule: data.schedule ?? null,
     comparison: {
       aco: toResult(data.comparison?.aco),
       nearestNeighbour: toResult(data.comparison?.nearestNeighbour),
@@ -56,10 +66,20 @@ export function toPlannedRoute(data) {
 }
 
 // placeIds: 2 to 10 ids; travelMode: "walking" | "driving"; startPlaceId optional.
-export async function planRoute({ placeIds, travelMode = "walking", startPlaceId, seed }) {
+// day ("mon".."sun") and startTime ("09:30"): when the trip starts, for the opening hours.
+export async function planRoute({
+  placeIds,
+  travelMode = "walking",
+  startPlaceId,
+  seed,
+  day,
+  startTime,
+}) {
   const body = { placeIds, travelMode };
   if (startPlaceId) body.startPlaceId = startPlaceId;
   if (seed !== undefined) body.seed = seed;
+  if (day) body.day = day;
+  if (startTime) body.startTime = startTime;
   const data = await apiRequest("/api/hopping/route", { method: "POST", body });
   return toPlannedRoute(data);
 }

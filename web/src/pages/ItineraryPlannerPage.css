@@ -155,3 +155,29 @@
     height: calc(100dvh - var(--header-height) - var(--space-xl));
   }
 }
+
+.trip-start {
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.trip-start .field {
+  flex: 1 1 140px;
+}
+
+.stop__time {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-sm);
+  color: var(--color-muted-foreground);
+}
+
+.stop__closed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-destructive-text);
+  font-weight: 600;
+}
