@@ -183,6 +183,11 @@ describe("Food Stalls Analytics (demo)", () => {
     expect(data.suggestions.length).toBeLessThanOrEqual(5);
     expect(data.suggestions.every((p) => p.label === "Hidden Gem")).toBe(true);
     expect(data.findings.length).toBeGreaterThanOrEqual(3);
+    // DBSCAN food clusters over the OpenStreetMap + SAMPLE places.
+    expect(data.clusters.settings).toEqual({ epsM: 60, minPoints: 6 });
+    expect(data.clusters.clusters.length).toBeGreaterThan(10);
+    expect(data.clusters.clusters.some((c) => c.isHiddenGemArea)).toBe(true);
+    expect(data.findings.some((f) => f.includes("DBSCAN"))).toBe(true);
     const ratings = data.byArea.map((g) => g.averageRating);
     expect(ratings).toEqual([...ratings].sort((a, b) => b - a));
   });

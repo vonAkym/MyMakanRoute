@@ -5,6 +5,8 @@ jest.mock("../../src/modules/food-stalls-analytics/model", () => ({
   averageRatingBy: jest.fn(),
   findRatedFoodPlaces: jest.fn(),
   findPlaceFeatures: jest.fn(),
+  // Default: no located places, so no clusters (set per test when needed).
+  findFoodPlaceLocations: jest.fn(async () => []),
 }));
 const model = require("../../src/modules/food-stalls-analytics/model");
 const app = require("../../src/app");
@@ -132,6 +134,46 @@ describe("GET /api/analytics/overview", () => {
     expect(res.body.error.code).toBe("INTERNAL_ERROR");
     expect(JSON.stringify(res.body)).not.toContain("10.0.0.1");
     spy.mockRestore();
+  });
+});
+
+describe("Food Places Analysis: DBSCAN food clusters", () => {
+  test("the overview reports food clusters and adds them to the findings", async () => {
+    mockSampleData();
+    const street = Array.from({ length: 6 }, (_, k) => ({
+      id: `s${k}`,
+      name: `Stall ${k}`,
+      area: "Pulau Tikus",
+      lat: 5.43 + k * 0.0001,
+      lng: 100.31,
+      avg_rating: k < 3 ? 4.6 : null,
+      review_count: k < 3 ? 40 : 0,
+    }));
+    model.findFoodPlaceLocations.mockResolvedValueOnce([
+      ...street,
+      {
+        id: "alone",
+        name: "Alone",
+        area: null,
+        lat: 5.3,
+        lng: 100.2,
+        avg_rating: null,
+        review_count: 0,
+      },
+    ]);
+    const res = await request(app).get("/api/analytics/overview");
+    expect(res.status).toBe(200);
+    const { clusters, findings } = res.body.data;
+    expect(clusters.settings).toEqual({ epsM: 60, minPoints: 6 });
+    expect(clusters.noisePlaces).toBe(1);
+    expect(clusters.clusters).toHaveLength(1);
+    expect(clusters.clusters[0]).toMatchObject({
+      places: 6,
+      area: "Pulau Tikus",
+      hiddenGems: 3,
+      isHiddenGemArea: true,
+    });
+    expect(findings.some((f) => /DBSCAN\) found 1 food cluster/.test(f))).toBe(true);
   });
 });
 

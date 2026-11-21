@@ -1,6 +1,7 @@
 // Food Stalls Analytics: builds the dashboard overview.
 //   Food Places Visualisation -> totals, by area, by cuisine, label counts, scatter points
-//   Food Places Analysis      -> findings sentences (findings.js)
+//   Food Places Analysis      -> findings sentences (findings.js) + DBSCAN food clusters
+//                                (clustering.js)
 //   Food Place Suggestion     -> recommender that learns the user's taste from trip history
 //                                and suggests places nearby (suggestion.js, SRD 4.8.4)
 
@@ -10,6 +11,7 @@ const { LABELS, labelHiddenGem } = require("../food-discovery/hiddenGem");
 const { SAMPLE_NOTE } = require("../food-discovery/service");
 const { analyseFoodPlaces } = require("./findings");
 const { suggestFoodPlaces, SUGGESTION_RADIUS_M } = require("./suggestion");
+const { findFoodClusters, describeFoodClusters } = require("./clustering");
 
 const NO_LABEL = "No label";
 
@@ -102,12 +104,13 @@ async function getFoodPlaceSuggestions(query = {}) {
 
 async function getAnalyticsOverview(query = {}) {
   const thresholds = config.hiddenGem;
-  const [summary, areaRows, cuisineRows, placeRows, pastPlaces] = await Promise.all([
+  const [summary, areaRows, cuisineRows, placeRows, pastPlaces, locationRows] = await Promise.all([
     model.summariseRatedFoodPlaces(),
     model.averageRatingBy("area"),
     model.averageRatingBy("cuisine"),
     model.findRatedFoodPlaces(),
     loadPastPlaces(query.pastPlaceIds),
+    model.findFoodPlaceLocations(),
   ]);
 
   const places = placeRows.map((row) => toAnalysedPlace(row, thresholds));
@@ -133,6 +136,20 @@ async function getAnalyticsOverview(query = {}) {
     pastPlaces,
     location: locationFrom(query),
   });
+  // Food Places Analysis: DBSCAN food clusters over every place with a location.
+  const clusters = findFoodClusters(
+    locationRows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      area: row.area,
+      lat: Number(row.lat),
+      lng: Number(row.lng),
+      avgRating: row.avg_rating == null ? null : Number(row.avg_rating),
+      reviewCount: row.review_count ?? 0,
+      label: labelHiddenGem(row, thresholds),
+    })),
+    thresholds,
+  );
 
   const overview = {
     totals,
@@ -153,7 +170,11 @@ async function getAnalyticsOverview(query = {}) {
     })),
     suggestions,
     suggestionsBasedOn: basedOn,
-    findings: analyseFoodPlaces({ totals, byArea, byCuisine, labelAverages, thresholds }),
+    clusters,
+    findings: [
+      ...analyseFoodPlaces({ totals, byArea, byCuisine, labelAverages, thresholds }),
+      ...describeFoodClusters(clusters),
+    ],
     thresholds,
   };
   return totals.samplePlaces > 0 ? { ...overview, note: SAMPLE_NOTE } : overview;

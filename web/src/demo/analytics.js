@@ -5,6 +5,33 @@
 import { DEMO_PLACES, DEMO_THRESHOLDS, DEMO_NOTE } from "./places.js";
 import { LABELS, labelHiddenGem } from "./discovery.js";
 import { suggestFoodPlaces, SUGGESTION_RADIUS_M } from "./suggestion.js";
+import { findFoodClusters, describeFoodClusters } from "./clustering.js";
+import osm from "./osm-places.json";
+
+// DBSCAN food clusters over every located place: the 1,062 named OpenStreetMap places of the
+// prototype area (no ratings) plus the 55 SAMPLE places, as in a database with the OSM import.
+const CLUSTER_PLACES = [
+  ...osm.places.map(([name, lat, lng], k) => ({
+    id: `osm-${k}`,
+    name,
+    area: null,
+    lat,
+    lng,
+    avgRating: null,
+    reviewCount: 0,
+    label: null,
+  })),
+  ...DEMO_PLACES.map((p) => ({
+    id: p.id,
+    name: p.name,
+    area: p.area,
+    lat: p.lat,
+    lng: p.lng,
+    avgRating: p.avg_rating,
+    reviewCount: p.review_count,
+    label: labelHiddenGem(p),
+  })),
+];
 
 const MIN_PLACES_TO_COMPARE = 3;
 const NO_LABEL = "No label";
@@ -171,6 +198,7 @@ export function getAnalyticsOverview(query = {}) {
   const byCuisine = averageRatingBy(rows, (r) => (r.cuisine?.trim() || "unknown").toLowerCase());
   const labelAverages = { hiddenGem: averagesFor(hiddenGems), popular: averagesFor(popular) };
   const { basedOn, suggestions } = suggestionsFor(places, query);
+  const clusters = findFoodClusters(CLUSTER_PLACES, thresholds);
 
   return {
     totals,
@@ -191,7 +219,11 @@ export function getAnalyticsOverview(query = {}) {
     })),
     suggestions,
     suggestionsBasedOn: basedOn,
-    findings: analyseFoodPlaces({ totals, byArea, byCuisine, labelAverages, thresholds }),
+    clusters,
+    findings: [
+      ...analyseFoodPlaces({ totals, byArea, byCuisine, labelAverages, thresholds }),
+      ...describeFoodClusters(clusters),
+    ],
     thresholds,
     note: DEMO_NOTE,
   };

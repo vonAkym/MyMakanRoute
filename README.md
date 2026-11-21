@@ -111,9 +111,9 @@ To try demo mode locally, add `VITE_DEMO_MODE=true` to `web/.env` and run `npm.c
 | --- | --- |
 | `GET /api/discovery/places?lat&lng&radius&halal&maxPrice&cuisine&dietary&openNow&label&limit` | Food Place Searching, Hidden Gem Highlighting |
 | `GET /api/discovery/places/:id` | Food Place Visualisation |
-| `POST /api/hopping/route` | Route Planner (Dijkstra + Ant Colony Optimisation) |
-| `GET /api/analytics/overview?halal&maxPrice&cuisine&dietary&pastPlaceIds` | Food Places Visualisation, Analysis, Suggestion |
-| `GET /api/analytics/suggestions?halal&maxPrice&cuisine&dietary&pastPlaceIds` | Food Place Suggestion ("Suggested for you" on Discover) |
+| `POST /api/hopping/route` | Route Planner (Dijkstra + Ant Colony Optimisation with opening hours as time windows) |
+| `GET /api/analytics/overview?lat&lng&halal&maxPrice&cuisine&dietary&pastPlaceIds` | Food Places Visualisation, Analysis, Suggestion |
+| `GET /api/analytics/suggestions?lat&lng&halal&maxPrice&cuisine&dietary&pastPlaceIds` | Food Place Suggestion ("Suggested for you" on Discover) |
 
 ### Tests, code style and feasibility study
 
@@ -152,6 +152,7 @@ GitHub Actions (`.github/workflows/ci.yml`) runs these checks automatically on e
   - Web app: Discover (list + map), Trip (plan route, reorder, save), Trips (past trips), Analytics dashboard.
   - Landing page redesigned (4 Nov 2026); the other pages will be restyled to match after the student's review.
 - **GitHub Actions CI: added (19 Nov 2026).** Lint, format check and tests run on every push.
+- **Intelligent methods extended (21 Nov 2026):** ACO now plans with opening hours (time windows), Food Place Suggestion learns a taste profile from trip history and suggests places within 3 km, and Food Places Analysis finds food clusters with DBSCAN.
 - **GitHub Pages demo: added (21 Nov 2026).** The web app with the 55 SAMPLE places runs in the browser at https://vonakym.github.io/MyMakanRoute/.
 - **Demo mode (until Phase 2B):** login, registration and profile run only in the browser; saved and past trips are stored in the browser (localStorage).
 - **Planned:**

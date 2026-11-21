@@ -110,6 +110,40 @@ describe("FoodStallsAnalyticsPage", () => {
     expect(within(suggestions).getByText(/within 3 km of Komtar/)).toBeInTheDocument();
   });
 
+  test("shows DBSCAN food clusters, hidden gem areas first", async () => {
+    const cluster = (id, area, places, isHiddenGemArea, extra = {}) => ({
+      id,
+      area,
+      places,
+      centre: { lat: 5.4, lng: 100.3 },
+      ratedPlaces: 3,
+      averageRating: 4.5,
+      medianReviews: 60,
+      hiddenGems: 2,
+      isHiddenGemArea,
+      topPlaces: ["Gem Stall"],
+      ...extra,
+    });
+    mockFetch({
+      "GET /api/analytics/overview": ok({
+        ...overview,
+        clusters: {
+          clusters: [cluster(1, "George Town", 76, false), cluster(2, "Pulau Tikus", 13, true)],
+          noisePlaces: 605,
+          settings: { epsM: 60, minPoints: 6 },
+        },
+      }),
+    });
+    renderWithProviders(<FoodStallsAnalyticsPage />);
+
+    const card = await screen.findByRole("region", { name: "Food clusters" });
+    expect(within(card).getByText(/2 clusters, 605 places on their own/)).toBeInTheDocument();
+    const items = within(card).getAllByRole("listitem");
+    expect(items[0]).toHaveTextContent("Pulau Tikus · 13 places");
+    expect(within(items[0]).getByText("Hidden gem area")).toBeInTheDocument();
+    expect(items[1]).toHaveTextContent("George Town · 76 places");
+  });
+
   test("no matching places -> the suggestion section is hidden", async () => {
     mockFetch({ "GET /api/analytics/overview": ok({ ...overview, suggestions: [] }) });
     renderWithProviders(<FoodStallsAnalyticsPage />);

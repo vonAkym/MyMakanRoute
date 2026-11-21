@@ -136,6 +136,7 @@
 
   .bento__kpis,
   .bento__findings,
+  .bento__clusters,
   .bento__scatter {
     grid-column: 1 / -1;
   }
@@ -150,7 +151,8 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .bento__findings {
+  .bento__findings,
+  .bento__clusters {
     grid-column: span 2;
   }
 

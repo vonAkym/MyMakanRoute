@@ -50,6 +50,18 @@ async function findRatedFoodPlaces() {
   return rows;
 }
 
+// Every place with a location, rated or not (for DBSCAN food clusters).
+async function findFoodPlaceLocations() {
+  const { rows } = await db.query(`
+    select id, name, area,
+           st_y(location::geometry) as lat,
+           st_x(location::geometry) as lng,
+           avg_rating::float8 as avg_rating, review_count
+      from places
+     where location is not null`);
+  return rows;
+}
+
 // Features of the places in the user's saved trips (past choices, from which Food Place
 // Suggestion learns the user's taste). ids are UUIDs checked by the service; sent as one parameter.
 async function findPlaceFeatures(ids) {
@@ -68,5 +80,6 @@ module.exports = {
   averageRatingBy,
   findRatedFoodPlaces,
   findPlaceFeatures,
+  findFoodPlaceLocations,
   GROUP_COLUMNS,
 };

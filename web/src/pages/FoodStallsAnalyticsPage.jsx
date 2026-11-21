@@ -1,6 +1,7 @@
 // Food Stalls Analytics module page (/analytics), bento dashboard:
 //   Food Places Visualisation -> KPI cards + charts (GET /api/analytics/overview)
-//   Food Places Analysis      -> "Findings" sentences written by the backend
+//   Food Places Analysis      -> "Findings" sentences written by the backend + DBSCAN food
+//                                clusters (FoodClustersCard)
 //   Food Place Suggestion     -> "Suggested for you" (preferences + past trips, SuggestionsCard)
 
 import { useEffect, useMemo, useState } from "react";
@@ -27,6 +28,7 @@ import { getAnalyticsOverview, getSuggestionLocation } from "../api/foodStallsAn
 import ChartCard, { chartColour } from "../components/ChartCard";
 import SampleDataBanner from "../components/SampleDataBanner";
 import SuggestionsCard from "../components/SuggestionsCard";
+import FoodClustersCard from "../components/FoodClustersCard";
 import PlaceDetailDrawer from "../components/PlaceDetailDrawer";
 import { useTripBasket } from "../context/TripBasketContext";
 import ErrorState from "../components/ErrorState";
@@ -235,6 +237,8 @@ export default function FoodStallsAnalyticsPage() {
               <p className="muted">Not enough data for findings yet.</p>
             )}
           </section>
+
+          <FoodClustersCard className="bento__clusters" clusters={data.clusters} />
 
           <ChartCard
             className="bento__area"
