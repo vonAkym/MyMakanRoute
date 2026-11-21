@@ -34,6 +34,10 @@ app.get(
   }),
 );
 
+app.use("/api/discovery", require("./modules/food-discovery/routes").router);
+app.use("/api/hopping", require("./modules/food-hopping/routes").router);
+app.use("/api/analytics", require("./modules/food-stalls-analytics/routes").router);
+
 app.use(notFound);
 app.use(errorHandler);
 

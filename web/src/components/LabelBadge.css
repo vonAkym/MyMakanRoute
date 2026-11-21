@@ -1,0 +1,27 @@
+.label-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.label-badge--sm {
+  padding: 0 8px;
+  font-size: var(--text-xs);
+}
+
+/* Black text on orange/teal: about 5.9:1 and 5.7:1 contrast. */
+.label-badge--gem {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.label-badge--popular {
+  background: var(--color-secondary);
+  color: var(--color-on-secondary);
+}

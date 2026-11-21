@@ -1,0 +1,197 @@
+/* Landing place card: charcoal card, thin orange outline, 16px radius, lifts on hover. */
+
+.lp-place {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-card-outline);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+  transition:
+    transform var(--duration-slow) var(--ease-out),
+    border-color var(--duration-slow) ease,
+    box-shadow var(--duration-slow) ease;
+}
+
+.lp-place:hover,
+.lp-place:focus-within {
+  border-color: var(--color-accent-hover);
+  box-shadow: var(--shadow-card);
+}
+
+.lp-place:hover {
+  transform: translateY(-4px);
+}
+
+.lp-place__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.lp-place__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 600ms var(--ease-out);
+}
+
+.lp-place:hover .lp-place__media img {
+  transform: scale(1.05);
+}
+
+.lp-place__label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-overlay);
+  color: var(--color-foreground);
+  border: 1px solid var(--color-input-border);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.lp-place__label--gem {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.lp-place__save {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  padding: 0;
+  border: 1px solid var(--color-overlay-border);
+  border-radius: var(--radius-full);
+  background: var(--color-overlay);
+  color: var(--color-foreground);
+  cursor: pointer;
+  transition:
+    color var(--duration-normal) ease,
+    border-color var(--duration-normal) ease;
+}
+
+.lp-place__save:hover,
+.lp-place__save.is-saved {
+  color: var(--color-primary-text);
+  border-color: var(--color-primary);
+}
+
+.lp-place__save:focus-visible {
+  outline: 3px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-full);
+}
+
+.lp-place__heart--pop {
+  animation: lp-pop 360ms var(--ease-out);
+}
+
+@keyframes lp-pop {
+  40% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.lp-place__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+}
+
+.lp-place__name {
+  margin: 0;
+  color: var(--color-foreground);
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.lp-place__description {
+  margin: 0;
+  color: var(--color-muted-foreground);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.lp-place__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--color-muted-foreground);
+  font-size: var(--text-sm);
+}
+
+.lp-place__halal {
+  padding: 1px 8px;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.lp-place__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-top: auto;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.lp-place__rating,
+.lp-place__price {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.lp-place__rating svg {
+  color: var(--color-primary);
+}
+
+.lp-place__rating strong {
+  color: var(--color-foreground);
+}
+
+.lp-place__reviews {
+  color: var(--color-muted-foreground);
+  font-size: var(--text-xs);
+}
+
+.lp-place__price {
+  color: var(--color-primary-text);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-place:hover,
+  .lp-place:hover .lp-place__media img {
+    transform: none;
+  }
+}

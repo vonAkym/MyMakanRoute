@@ -1,0 +1,166 @@
+/* How it works: collage | text + stats, then three step cards. */
+
+.lp-how {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 5rem);
+}
+
+/* Collage: one tall picture on the left, two stacked on the right. */
+.lp-how__collage {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.lp-how__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 1px solid var(--color-card-outline);
+  border-radius: var(--radius-card);
+}
+
+.lp-how__img--big {
+  grid-row: span 2;
+}
+
+.lp-how__text .lp-heading {
+  margin-bottom: var(--space-xl);
+}
+
+/* Stats: big orange numbers, small grey labels. dt/dd are swapped visually so the number
+   shows first while the label still names it for screen readers. */
+.lp-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-md);
+  margin: 0;
+}
+
+.lp-stats__item {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+}
+
+.lp-stats__value {
+  margin: 0;
+  color: var(--color-primary-text);
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.lp-stats__label {
+  color: var(--color-muted-foreground);
+  font-size: var(--text-xs);
+  line-height: 1.45;
+}
+
+/* Steps */
+.lp-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-lg);
+  margin: var(--space-3xl) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lp-step {
+  position: relative;
+  padding: var(--space-xl);
+  border: 1px solid var(--color-card-outline);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+  transition:
+    transform var(--duration-slow) var(--ease-out),
+    border-color var(--duration-slow) ease;
+}
+
+.lp-step:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-accent-hover);
+}
+
+.lp-step__number {
+  position: absolute;
+  top: var(--space-lg);
+  right: var(--space-lg);
+  color: var(--color-watermark);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.lp-step__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--space-lg);
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.lp-step__title {
+  margin: 0 0 var(--space-sm);
+  color: var(--color-foreground);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.lp-step__text {
+  margin: 0;
+  color: var(--color-muted-foreground);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+}
+
+@media (max-width: 1023px) {
+  .lp-how {
+    grid-template-columns: 1fr;
+  }
+
+  .lp-how__text {
+    order: -1; /* text first on tablets and phones */
+  }
+}
+
+@media (max-width: 639px) {
+  .lp-how__collage {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+
+  .lp-how__img--big {
+    grid-row: auto;
+  }
+
+  /* Stacked on phones: same 4:3 crop for every picture so none gets very tall. */
+  .lp-how__img {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .lp-stats,
+  .lp-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-step:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,67 @@
+.past-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+.trip-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trip-card {
+  padding: var(--space-md);
+  transition: box-shadow var(--duration-normal) ease;
+}
+
+.trip-card.is-selected {
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.trip-card__name {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.trip-card__name + p {
+  margin-bottom: var(--space-xs);
+}
+
+.trip-card__facts {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.past-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.past-map {
+  height: 50dvh;
+  min-height: 320px;
+}
+
+.past-stops {
+  margin: 0;
+  padding-left: var(--space-lg);
+}
+
+.past-stops li + li {
+  margin-top: var(--space-xs);
+}
+
+@media (min-width: 1024px) {
+  .past-layout {
+    grid-template-columns: minmax(320px, 400px) 1fr;
+    align-items: start;
+  }
+}

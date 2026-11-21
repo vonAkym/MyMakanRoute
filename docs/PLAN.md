@@ -188,6 +188,8 @@ Needs from the student: a Google Cloud project with Places API (New) enabled and
 | 4 | Itinerary screen: pick places, plan route, reorder, save, past trips | Same on phone |
 | 5 | Analytics dashboard: charts, findings, suggestions | Simple version |
 
+4 Nov 2026: landing page redesigned (docs/plans/landing-page.md); other pages to follow after the student's review.
+
 Commit after web works, then after mobile works.
 
 ### Phase 3: Quality

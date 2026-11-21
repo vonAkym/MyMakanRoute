@@ -1,0 +1,36 @@
+/* Featured places grid: 4 / 2 / 1 columns. */
+
+.lp-places {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lp-places__more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-2xl);
+}
+
+.lp-places__note {
+  margin: 0;
+  color: var(--color-subtle-foreground);
+  font-size: var(--text-xs);
+}
+
+@media (max-width: 1023px) {
+  .lp-places {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 639px) {
+  .lp-places {
+    grid-template-columns: 1fr;
+  }
+}

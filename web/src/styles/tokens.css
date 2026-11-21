@@ -1,0 +1,144 @@
+/* Design tokens: dark food guide theme (4 Nov 2026), see docs/plans/landing-page.md.
+   This is the global theme: change colours, fonts, radius and spacing here only.
+   Components use these variables, never raw hex values. Contrast ratios (WCAG formula)
+   are listed next to each text colour; AA needs 4.5:1 for text, 3:1 for icons/borders. */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces (darkest to lightest) */
+  --color-background: #0b0b0b;
+  --color-card: #2a2a2a;
+  --color-raised: #333333;
+  --color-section: #141414; /* alternate section band */
+  --color-border: #3a3a3a; /* decorative dividers only */
+  --color-input-border: #8a8a8a; /* form fields and outlines: 4.2:1 on card, 5.7:1 on bg */
+
+  /* Text */
+  --color-foreground: #ffffff; /* 19.7:1 on bg, 14.4:1 on card */
+  --color-card-foreground: #ffffff;
+  --color-muted-foreground: #b3b3b3; /* 9.4:1 on bg, 6.9:1 on card */
+  --color-subtle-foreground: #8a8a8a; /* small print: 5.7:1 on bg */
+
+  /* The ONE accent: warm food orange. Text 7.1:1 on bg, 5.2:1 on card. Never white text on
+     it (2.8:1): filled buttons use near-black text (7.1:1). */
+  --color-primary: #e8873a;
+  --color-accent-hover: #f29a52; /* brighter orange for hovered borders and fills */
+  --color-on-primary: #0b0b0b;
+  --color-primary-text: #e8873a;
+  --color-primary-soft: color-mix(in srgb, var(--color-primary) 14%, var(--color-card));
+  --color-ring: #e8873a;
+  --color-accent-deep: #b85c1c; /* dark end of orange gradients (avatars) */
+  --color-card-outline: color-mix(
+    in srgb,
+    var(--color-primary) 55%,
+    transparent
+  ); /* thin card border */
+  --color-primary-tint: color-mix(
+    in srgb,
+    var(--color-primary) 10%,
+    transparent
+  ); /* icon circles */
+  --color-primary-glow: color-mix(in srgb, var(--color-primary) 14%, transparent); /* hero light */
+  --color-primary-faint: color-mix(in srgb, var(--color-primary) 45%, transparent); /* quote icon */
+  --color-focus-glow: color-mix(in srgb, var(--color-ring) 30%, transparent); /* input focus */
+  --color-watermark: color-mix(
+    in srgb,
+    var(--color-foreground) 14%,
+    transparent
+  ); /* step numbers */
+  --color-overlay: rgba(11, 11, 11, 0.8); /* dark chip over pictures */
+  --color-overlay-border: rgba(255, 255, 255, 0.25);
+  --color-nav-bg: color-mix(in srgb, var(--color-background) 88%, transparent);
+  --color-nav-border: color-mix(in srgb, var(--color-border) 70%, transparent);
+
+  /* Cool secondary, used only where two labels must be told apart (Popular in charts). */
+  --color-secondary: #22d3ee; /* 10.1:1 on card */
+  --color-on-secondary: #0b0b0f;
+  --color-secondary-text: #22d3ee;
+  --color-secondary-soft: color-mix(in srgb, var(--color-secondary) 12%, var(--color-card));
+
+  /* Status */
+  --color-destructive: #f87171; /* 5.2:1 on card, 7.1:1 on bg */
+  --color-destructive-text: #f87171;
+  --color-destructive-soft: color-mix(in srgb, var(--color-destructive) 12%, var(--color-card));
+  --color-on-destructive: #0b0b0f;
+  --color-success-text: #4ade80; /* 10.4:1 on card */
+  --color-success-soft: color-mix(in srgb, #4ade80 10%, var(--color-card));
+  --color-success-border: color-mix(in srgb, #4ade80 45%, var(--color-card));
+
+  /* Legacy names kept so older rules still resolve */
+  --color-accent: var(--color-primary);
+  --color-on-accent: var(--color-on-primary);
+  --color-muted: var(--color-raised);
+
+  /* Charts: categorical order gem -> popular -> none (validated for separation). */
+  --chart-gem: #e8873a;
+  --chart-popular: #22d3ee;
+  --chart-none: #71717a;
+  --chart-bar: #a1a1aa; /* single-series bars stay neutral */
+  --chart-grid: #3a3a3a;
+  --chart-axis: #a1a1aa;
+
+  /* Typography */
+  /* Poppins for headings (600/700) and body (400/500): one family, fewer downloads. */
+  --font-heading: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --tracking-eyebrow: 0.2em;
+  --tracking-title: 0.12em;
+  --tracking-label: 0.18em;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.75rem;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --section-gap: clamp(4rem, 9vw, 7rem); /* vertical padding of each landing section */
+
+  /* Radius scale: small corners for the older app pages, --radius-card (16px) for the dark
+     food guide cards, --radius-full for pills (buttons, badges). */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-full: 999px;
+  --radius-card: 16px; /* cards, images and panels on the dark food guide pages */
+
+  /* Depth: borders do most of the work; shadows for floating layers and hovered cards. */
+  --shadow-sm: none;
+  --shadow-md: 0 1px 0 rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.45); /* hovered card */
+  --shadow-button: 0 10px 24px color-mix(in srgb, var(--color-primary) 28%, transparent);
+  --shadow-drop: 0 8px 12px rgba(0, 0, 0, 0.5); /* for filter: drop-shadow() on shapes */
+
+  /* Motion: subtle, 150 to 300 ms */
+  --duration-fast: 150ms;
+  --duration-normal: 220ms;
+  --duration-slow: 300ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Layout */
+  --container-max: 1200px;
+  --header-height: 64px; /* AppShell top bar */
+  --nav-height: 76px; /* landing Navbar */
+  --bottom-nav-height: 64px;
+  --touch-target: 44px;
+
+  /* Layers */
+  --z-map: 0;
+  --z-sticky: 20;
+  --z-nav: 40;
+  --z-drawer: 1000;
+  --z-skip: 1100;
+}

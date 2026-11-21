@@ -1,0 +1,86 @@
+.filter-panel {
+  padding: var(--space-md);
+}
+
+.filter-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-panel__title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.filter-panel__chevron {
+  transition: transform var(--duration-normal) ease;
+}
+
+.filter-panel__chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.filter-panel__body {
+  margin-top: var(--space-md);
+}
+
+.filter-panel__checks {
+  margin-bottom: var(--space-md);
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+/* Checkbox shown as a pill. The real checkbox stays focusable for keyboard users. */
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-normal) ease,
+    border-color var(--duration-normal) ease;
+}
+
+.chip input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--color-primary);
+}
+
+.chip:has(input:checked) {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+/* Not colour alone: a tick appears in front of selected chips. */
+.chip:has(input:checked)::before {
+  content: "✓";
+  margin-right: 6px;
+  font-weight: 700;
+}
+
+.chip:has(input:focus-visible) {
+  outline: 3px solid var(--color-ring);
+  outline-offset: 2px;
+}
