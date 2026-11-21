@@ -3,11 +3,12 @@
 // - Based on preferences: says which features matched (cuisine, price, area, hidden gem).
 // - Based on findings only (no preferences or trips yet): invites the user to set them.
 // - Nothing matches: the whole section is hidden (UC-10 alternative flow 3a).
+// Suggestions are places within 3 km of the user's location (nearName).
 
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import LabelBadge from "./LabelBadge";
-import { capitalise, formatHalal, formatRating } from "../lib/format";
+import { capitalise, formatDistance, formatHalal, formatRating } from "../lib/format";
 import "./SuggestionsCard.css";
 
 const MATCH_WORDS = {
@@ -58,9 +59,13 @@ export default function SuggestionsCard({
               )}
               <span className="muted small">
                 {capitalise(s.cuisine)} · {s.area} · {formatHalal(s.isHalal)}
+                {s.distanceM != null && ` · ${formatDistance(s.distanceM)} away`}
               </span>
               {byPreferences && (
-                <span className="small suggestion__why">{describeMatch(s.matchedOn)}</span>
+                <span className="small suggestion__why">
+                  {s.matchScore != null && `${Math.round(s.matchScore * 100)}% match · `}
+                  {describeMatch(s.matchedOn)}
+                </span>
               )}
             </div>
             <div className="suggestion__right">

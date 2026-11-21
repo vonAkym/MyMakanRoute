@@ -139,8 +139,12 @@ describe("FoodDiscoveryPage", () => {
     });
     renderWithProviders(<FoodDiscoveryPage />);
 
+    const fetchCalls = () => vi.mocked(fetch).mock.calls.map((c) => new URL(c[0]));
     const card = await screen.findByRole("region", { name: "Suggested for you" });
-    expect(within(card).getByText("Matches your cuisine, hidden gem")).toBeVisible();
+    // Suggestions are asked for near the chosen location (Komtar by default).
+    const asked = fetchCalls().find((u) => u.pathname === "/api/analytics/suggestions");
+    expect(asked.searchParams.get("lat")).toBe("5.4145");
+    expect(within(card).getByText(/Matches your cuisine, hidden gem/)).toBeVisible();
     fireEvent.click(within(card).getByRole("button", { name: "Gem Stall" }));
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
   });

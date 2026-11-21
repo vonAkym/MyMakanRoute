@@ -209,7 +209,14 @@ describe("Food Place Suggestion (demo)", () => {
     expect(scores.every((s) => s > 0)).toBe(true);
   });
 
-  test("past trips count as past choices (area of a visited place)", async () => {
+  test("suggests only places within 3 km of the user", async () => {
+    const data = await suggest({ ...KOMTAR, cuisine: ["chinese"] });
+    expect(data.suggestions.length).toBeGreaterThan(0);
+    expect(data.suggestions.every((p) => p.distanceM <= 3000)).toBe(true);
+    expect(data.radiusM).toBe(3000);
+  });
+
+  test("past trips teach the taste profile (area of a visited place)", async () => {
     const visited = DEMO_PLACES.find((p) => p.area === "Gelugor") ?? DEMO_PLACES[0];
     const data = await suggest({ pastPlaceIds: [visited.id] });
     expect(data.basedOn).toBe("preferences");

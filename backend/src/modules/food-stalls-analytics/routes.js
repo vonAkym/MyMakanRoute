@@ -12,8 +12,10 @@ const MAX_PAST_PLACES = 50;
 // The user's preferences use the same checks as the Food Discovery search, so the two
 // pages read halal, maxPrice, cuisine and dietary the same way.
 // pastPlaceIds: places in the user's saved trips, "id1,id2,..." (at most 50).
+// lat, lng: where the user is; suggestions are then limited to places within 3 km.
 const suggestionQuery = searchFoodPlacesQuery
-  .pick({ halal: true, maxPrice: true, cuisine: true, dietary: true })
+  .pick({ lat: true, lng: true, halal: true, maxPrice: true, cuisine: true, dietary: true })
+  .partial({ lat: true, lng: true })
   .extend({
     pastPlaceIds: z
       .string()
@@ -26,6 +28,10 @@ const suggestionQuery = searchFoodPlacesQuery
       )
       .pipe(z.array(z.string().max(64)).max(MAX_PAST_PLACES))
       .optional(),
+  })
+  .refine((q) => (q.lat === undefined) === (q.lng === undefined), {
+    message: "give both lat and lng, or neither",
+    path: ["lng"],
   });
 
 const router = express.Router();

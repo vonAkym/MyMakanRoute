@@ -166,10 +166,27 @@ describe("Food Place Suggestion with preferences", () => {
     expect(model.findPlaceFeatures).toHaveBeenCalledWith([PAST_ID]);
     const { data } = res.body;
     expect(data.basedOn).toBe("preferences");
-    // Hidden gems match 4 features (cuisine, price, area, hidden gem); the others 3.
+    // Hidden gems match all 4 features; the others 3 (no hidden gem label).
     expect(data.suggestions.map((p) => p.id)).toEqual(["b", "a", "c", "d"]);
-    expect(data.suggestions[0].matchScore).toBe(4);
+    // Taste profile from the past stop: chinese, George Town, price 1 (+ hidden gem prior).
+    expect(data.suggestions[0].similarity).toBeCloseTo(0.971, 2);
+    expect(data.suggestions[0].matchedOn).toEqual(["cuisine", "price", "area", "hidden gem"]);
     expect(data.note).toBe("Ratings for sample places are invented for testing.");
+  });
+
+  test("with the user's location, only places within 3 km are suggested", async () => {
+    mockSampleData();
+    const near = await request(app).get("/api/analytics/suggestions?lat=5.41&lng=100.33");
+    expect(near.body.data.suggestions.map((p) => p.id)).toEqual(["b", "a"]);
+    expect(near.body.data.suggestions[0].distanceM).toBe(0);
+    expect(near.body.data.radiusM).toBe(3000);
+    const far = await request(app).get("/api/analytics/suggestions?lat=3.1&lng=101.6");
+    expect(far.body.data.suggestions).toEqual([]);
+  });
+
+  test("lat without lng -> 400", async () => {
+    const res = await request(app).get("/api/analytics/suggestions?lat=5.41");
+    expect(res.status).toBe(400);
   });
 
   test("bad preference values -> 400 VALIDATION_ERROR", async () => {

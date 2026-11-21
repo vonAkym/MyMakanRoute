@@ -34,4 +34,5 @@ export const STORAGE_KEYS = Object.freeze({
   demoSession: "mmr.demoSession.v1",
   preferences: "mmr.preferences.v1",
   savedPlaces: "mmr.savedPlaces.v1",
+  lastLocation: "mmr.lastLocation.v1", // last place chosen on Discover (for suggestions)
 });

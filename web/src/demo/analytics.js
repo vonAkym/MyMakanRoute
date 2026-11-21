@@ -4,7 +4,7 @@
 
 import { DEMO_PLACES, DEMO_THRESHOLDS, DEMO_NOTE } from "./places.js";
 import { LABELS, labelHiddenGem } from "./discovery.js";
-import { suggestFoodPlaces } from "./suggestion.js";
+import { suggestFoodPlaces, SUGGESTION_RADIUS_M } from "./suggestion.js";
 
 const MIN_PLACES_TO_COMPARE = 3;
 const NO_LABEL = "No label";
@@ -66,13 +66,23 @@ function pastPlacesFrom(query = {}) {
     area: p.area,
     cuisine: p.cuisine,
     priceLevel: p.price_level,
+    label: labelHiddenGem(p),
   }));
+}
+
+function locationFrom(query = {}) {
+  const lat = Number(query.lat);
+  const lng = Number(query.lng);
+  return query.lat != null && query.lng != null && Number.isFinite(lat) && Number.isFinite(lng)
+    ? { lat, lng }
+    : null;
 }
 
 function suggestionsFor(places, query) {
   return suggestFoodPlaces(places, {
     preferences: preferencesFrom(query),
     pastPlaces: pastPlacesFrom(query),
+    location: locationFrom(query),
   });
 }
 
@@ -190,5 +200,11 @@ export function getAnalyticsOverview(query = {}) {
 // Same answer shape as GET /api/analytics/suggestions.
 export function getFoodPlaceSuggestions(query = {}) {
   const { suggestions, suggestionsBasedOn, thresholds, note } = getAnalyticsOverview(query);
-  return { basedOn: suggestionsBasedOn, suggestions, thresholds, note };
+  return {
+    basedOn: suggestionsBasedOn,
+    suggestions,
+    radiusM: SUGGESTION_RADIUS_M,
+    thresholds,
+    note,
+  };
 }

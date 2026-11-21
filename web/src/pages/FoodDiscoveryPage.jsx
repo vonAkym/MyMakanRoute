@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Crosshair, List, Map as MapIcon, MapPin, Route, Sparkles } from "lucide-react";
 import { searchFoodPlaces } from "../api/foodDiscovery";
-import { getFoodPlaceSuggestions } from "../api/foodStallsAnalytics";
+import { getFoodPlaceSuggestions, rememberSuggestionLocation } from "../api/foodStallsAnalytics";
 import { getPreferences, hasPreferences } from "../api/userManagement";
 import { useTripBasket } from "../context/TripBasketContext";
 import FilterPanel from "../components/FilterPanel";
@@ -62,15 +62,18 @@ export default function FoodDiscoveryPage() {
   const basket = useTripBasket();
   const [suggested, setSuggested] = useState({ basedOn: null, places: [] });
 
-  // "Suggested for you": loaded once. If it fails, the section simply stays hidden,
-  // because the search results below are the main content of this page.
+  // "Suggested for you" near the chosen location, reloaded when the location changes.
+  // If it fails, the section simply stays hidden: the search results are the main content.
+  const { lat: suggestLat, lng: suggestLng, name: suggestName } = location;
   useEffect(() => {
+    const here = { name: suggestName, lat: suggestLat, lng: suggestLng };
+    rememberSuggestionLocation(here);
     const controller = new AbortController();
-    getFoodPlaceSuggestions({ signal: controller.signal })
+    getFoodPlaceSuggestions({ signal: controller.signal, location: here })
       .then((data) => setSuggested({ basedOn: data.basedOn, places: data.suggestions ?? [] }))
       .catch(() => {});
     return () => controller.abort();
-  }, []);
+  }, [suggestLat, suggestLng, suggestName]);
 
   // Server-side filters only; "ratedOnly" is applied below in the browser.
   const { ratedOnly, ...serverFilters } = filters;
@@ -226,6 +229,7 @@ export default function FoodDiscoveryPage() {
             className="discover-suggestions"
             suggestions={suggested.places}
             basedOn={suggested.basedOn}
+            nearName={location.name}
             onOpen={(place) => {
               setSelectedId(place.id);
               setDetailId(place.id);

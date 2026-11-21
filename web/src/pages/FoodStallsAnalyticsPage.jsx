@@ -23,7 +23,7 @@ import {
   ZAxis,
 } from "recharts";
 import { Gem, Lightbulb, Percent, Star, Store } from "lucide-react";
-import { getAnalyticsOverview } from "../api/foodStallsAnalytics";
+import { getAnalyticsOverview, getSuggestionLocation } from "../api/foodStallsAnalytics";
 import ChartCard, { chartColour } from "../components/ChartCard";
 import SampleDataBanner from "../components/SampleDataBanner";
 import SuggestionsCard from "../components/SuggestionsCard";
@@ -413,6 +413,7 @@ export default function FoodStallsAnalyticsPage() {
             className="bento__suggestions"
             suggestions={suggestions}
             basedOn={data.suggestionsBasedOn}
+            nearName={getSuggestionLocation().name}
             onOpen={(place) => setDetailId(place.id)}
           >
             <Link

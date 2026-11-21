@@ -1,15 +1,15 @@
 // Food Stalls Analytics: builds the dashboard overview.
 //   Food Places Visualisation -> totals, by area, by cuisine, label counts, scatter points
 //   Food Places Analysis      -> findings sentences (findings.js)
-//   Food Place Suggestion     -> places that match the user's preferences and past choices
-//                                (suggestion.js, SRD 4.8.4)
+//   Food Place Suggestion     -> recommender that learns the user's taste from trip history
+//                                and suggests places nearby (suggestion.js, SRD 4.8.4)
 
 const config = require("../../config");
 const model = require("./model");
 const { LABELS, labelHiddenGem } = require("../food-discovery/hiddenGem");
 const { SAMPLE_NOTE } = require("../food-discovery/service");
 const { analyseFoodPlaces } = require("./findings");
-const { suggestFoodPlaces } = require("./suggestion");
+const { suggestFoodPlaces, SUGGESTION_RADIUS_M } = require("./suggestion");
 
 const NO_LABEL = "No label";
 
@@ -66,10 +66,16 @@ async function loadPastPlaces(pastPlaceIds = []) {
     area: row.area,
     cuisine: row.cuisine,
     priceLevel: row.price_level,
+    label: labelHiddenGem(row, config.hiddenGem),
   }));
 }
 
-// query (validated in routes.js): { halal?, maxPrice?, cuisine?, dietary?, pastPlaceIds? }
+// Where the user is, when the app sent it.
+const locationFrom = ({ lat, lng } = {}) =>
+  lat !== undefined && lng !== undefined ? { lat, lng } : null;
+
+// query (validated in routes.js): { lat?, lng?, halal?, maxPrice?, cuisine?, dietary?,
+//                                   pastPlaceIds? }
 const preferencesFrom = ({ halal, maxPrice, cuisine, dietary } = {}) => ({
   halal,
   maxPrice,
@@ -88,8 +94,9 @@ async function getFoodPlaceSuggestions(query = {}) {
   const { basedOn, suggestions } = suggestFoodPlaces(places, {
     preferences: preferencesFrom(query),
     pastPlaces,
+    location: locationFrom(query),
   });
-  const result = { basedOn, suggestions, thresholds };
+  const result = { basedOn, suggestions, thresholds, radiusM: SUGGESTION_RADIUS_M };
   return suggestions.some((p) => p.isSample) ? { ...result, note: SAMPLE_NOTE } : result;
 }
 
@@ -124,6 +131,7 @@ async function getAnalyticsOverview(query = {}) {
   const { basedOn, suggestions } = suggestFoodPlaces(places, {
     preferences: preferencesFrom(query),
     pastPlaces,
+    location: locationFrom(query),
   });
 
   const overview = {

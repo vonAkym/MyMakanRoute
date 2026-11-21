@@ -2,7 +2,9 @@ const { analyseFoodPlaces } = require("../../src/modules/food-stalls-analytics/f
 const {
   suggestFoodPlaces,
   fitsStrictPreferences,
-  matchFeatures,
+  learnTasteProfile,
+  cosineSimilarity,
+  placeFeatures,
 } = require("../../src/modules/food-stalls-analytics/suggestion");
 
 const thresholds = { minRating: 4.3, maxReviews: 100, popularMinReviews: 100 };
@@ -63,7 +65,7 @@ describe("analyseFoodPlaces (Food Places Analysis)", () => {
   });
 });
 
-describe("suggestFoodPlaces (Food Place Suggestion, SRD 4.8.4)", () => {
+describe("Food Place Suggestion: learned taste profile + nearness (SRD 4.8.4)", () => {
   const p = (id, avgRating, reviewCount, label = "Hidden Gem", extra = {}) => ({
     id,
     name: `Stall ${id}`,
@@ -75,31 +77,94 @@ describe("suggestFoodPlaces (Food Place Suggestion, SRD 4.8.4)", () => {
     avgRating,
     reviewCount,
     label,
+    lat: 5.4145,
+    lng: 100.3292,
     ...extra,
   });
   const ids = (result) => result.suggestions.map((x) => x.id);
+  const KOMTAR = { lat: 5.4145, lng: 100.3292 };
 
-  test("no preferences and no trips: findings only (best rated hidden gems), at most 5", () => {
+  test("placeFeatures describes a place by cuisine words, area, price and label", () => {
+    const place = p("x", 4.6, 12, "Hidden Gem", { cuisine: "Malay; Nasi Kandar", area: "Gelugor" });
+    expect(placeFeatures(place)).toEqual([
+      "cuisine:malay",
+      "cuisine:nasi kandar",
+      "area:gelugor",
+      "price:2",
+      "hidden-gem",
+    ]);
+  });
+
+  test("the taste profile learns from trip history: 6 of 7 Malay stops -> Malay weighs 6/7", () => {
+    const history = [
+      ...Array.from({ length: 6 }, () => ({ cuisine: "malay", area: "Gelugor", priceLevel: 1 })),
+      { cuisine: "chinese", area: "George Town", priceLevel: 2 },
+    ];
+    const profile = learnTasteProfile({}, history);
+    expect(profile.get("cuisine:malay")).toBeCloseTo(6 / 7);
+    expect(profile.get("cuisine:chinese")).toBeCloseTo(1 / 7);
+    expect(profile.get("hidden-gem")).toBe(0.5); // prior from the analysis findings
+    // A favourite cuisine on the Profile page adds 1.
+    expect(learnTasteProfile({ cuisine: ["chinese"] }, history).get("cuisine:chinese")).toBeCloseTo(
+      8 / 7,
+    );
+  });
+
+  test("cosine similarity is 1 for the same direction and 0 with nothing in common", () => {
+    const profile = new Map([
+      ["cuisine:malay", 1],
+      ["price:1", 1],
+    ]);
+    expect(cosineSimilarity(profile, ["cuisine:malay", "price:1"])).toBeCloseTo(1);
+    expect(cosineSimilarity(profile, ["cuisine:thai"])).toBe(0);
+  });
+
+  test("no preferences and no trips: best rated hidden gems within 3 km (findings only)", () => {
     const places = [
       p("pop", 4.9, 5000, "Popular"),
       p("g1", 4.4, 10),
       p("g2", 4.8, 80),
       p("g3", 4.9, 50),
+      p("far", 5.0, 5, "Hidden Gem", { lat: 5.3, lng: 100.2 }), // about 19 km away
       p("g4", 4.5, 5),
-      p("g5", 4.3, 99),
-      p("g6", 4.8, 30),
-      p("none", 4.0, 20, null),
     ];
-    const result = suggestFoodPlaces(places);
+    const result = suggestFoodPlaces(places, { location: KOMTAR });
     expect(result.basedOn).toBe("findings");
-    expect(ids(result)).toEqual(["g3", "g6", "g2", "g4", "g1"]);
-    expect(result.suggestions[0]).toMatchObject({ matchedOn: ["hidden gem"] });
+    expect(ids(result)).toEqual(["g3", "g2", "g4", "g1"]);
+    expect(result.suggestions[0].distanceM).toBe(0);
   });
 
-  test("count can be changed and the input is not reordered", () => {
-    const places = [p("a", 4.4, 10), p("b", 4.9, 10)];
-    expect(ids(suggestFoodPlaces(places, { count: 1 }))).toEqual(["b"]);
-    expect(places.map((x) => x.id)).toEqual(["a", "b"]);
+  test("trip history decides: a Malay lover in Gelugor gets the Malay place first", () => {
+    const history = Array.from({ length: 4 }, (_, k) => ({
+      id: `past${k}`,
+      cuisine: "malay",
+      area: "Gelugor",
+      priceLevel: 1,
+    }));
+    const places = [
+      p("chinese-gem", 4.9, 10),
+      p("malay", 4.2, 30, null, { cuisine: "malay", area: "Gelugor", priceLevel: 1 }),
+      p("past0", 4.9, 10, "Hidden Gem", { cuisine: "malay", area: "Gelugor", priceLevel: 1 }),
+    ];
+    const result = suggestFoodPlaces(places, { pastPlaces: history, location: KOMTAR });
+    expect(result.basedOn).toBe("preferences");
+    // past0 was visited already, so it is not suggested again.
+    expect(ids(result)).toEqual(["malay", "chinese-gem"]);
+    expect(result.suggestions[0].matchedOn).toEqual(["cuisine", "price", "area"]);
+  });
+
+  test("with equal taste match, the nearer place ranks first; beyond 3 km is left out", () => {
+    const places = [
+      p("2km", 4.5, 10, "Hidden Gem", { lat: 5.4325, lng: 100.3292 }),
+      p("200m", 4.5, 10, "Hidden Gem", { lat: 5.4163, lng: 100.3292 }),
+      p("5km", 4.9, 10, "Hidden Gem", { lat: 5.4595, lng: 100.3292 }),
+    ];
+    const result = suggestFoodPlaces(places, {
+      preferences: { cuisine: ["chinese"] },
+      location: KOMTAR,
+    });
+    expect(ids(result)).toEqual(["200m", "2km"]);
+    expect(result.suggestions[0].matchScore).toBeGreaterThan(result.suggestions[1].matchScore);
   });
 
   test("strict preferences remove places that break halal, budget or dietary needs", () => {
@@ -111,48 +176,15 @@ describe("suggestFoodPlaces (Food Place Suggestion, SRD 4.8.4)", () => {
     expect(fitsStrictPreferences(pricey, prefs)).toBe(false);
     expect(fitsStrictPreferences(notHalal, prefs)).toBe(false);
     expect(fitsStrictPreferences(halal, { dietary: ["vegan"] })).toBe(false);
-    expect(fitsStrictPreferences(pricey, {})).toBe(true);
+    expect(ids(suggestFoodPlaces([halal, pricey, notHalal], { preferences: prefs }))).toEqual([
+      "h",
+    ]);
   });
 
-  test("match score counts cuisine, price, area and the hidden gem finding", () => {
-    const place = p("x", 4.6, 12, "Hidden Gem", { cuisine: "malay;nasi kandar", area: "Gelugor" });
-    expect(matchFeatures(place, { cuisine: ["malay"] })).toEqual(["cuisine", "hidden gem"]);
-    expect(matchFeatures(place, { maxPrice: 2 })).toEqual(["price", "hidden gem"]);
-    const past = [{ area: "Gelugor", cuisine: "malay", priceLevel: 2 }];
-    expect(matchFeatures(place, {}, past)).toEqual(["cuisine", "price", "area", "hidden gem"]);
-    // With past trips, price matches the levels chosen before, not just the budget.
-    expect(matchFeatures(place, { maxPrice: 3 }, [{ priceLevel: 1 }])).toEqual(["hidden gem"]);
-  });
-
-  test("with preferences: highest score first, then rating; score 0 is left out", () => {
-    const places = [
-      p("gem-chinese", 4.9, 10),
-      p("gem-malay", 4.4, 10, "Hidden Gem", { cuisine: "malay" }),
-      p("popular-malay", 4.6, 900, "Popular", { cuisine: "malay" }),
-      p("plain-indian", 4.0, 20, null, { cuisine: "indian" }),
-    ];
-    const result = suggestFoodPlaces(places, { preferences: { cuisine: ["malay"] } });
-    expect(result.basedOn).toBe("preferences");
-    expect(ids(result)).toEqual(["gem-malay", "gem-chinese", "popular-malay"]);
-    expect(result.suggestions[0]).toMatchObject({ matchScore: 2 });
-  });
-
-  test("past choices alone also count as preferences", () => {
-    const places = [
-      p("far", 4.9, 10, "Hidden Gem", { area: "Air Itam" }),
-      p("near", 4.4, 10, "Hidden Gem", { area: "Gelugor" }),
-    ];
-    const result = suggestFoodPlaces(places, { pastPlaces: [{ area: "Gelugor" }] });
-    expect(result.basedOn).toBe("preferences");
-    expect(ids(result)).toEqual(["near", "far"]);
-  });
-
-  test("places already in the user's trips are not suggested again", () => {
-    const places = [p("visited", 4.9, 10), p("new", 4.4, 10)];
-    const result = suggestFoodPlaces(places, {
-      pastPlaces: [{ id: "visited", area: "George Town" }],
-    });
-    expect(ids(result)).toEqual(["new"]);
+  test("count can be changed and the input is not reordered", () => {
+    const places = [p("a", 4.4, 10), p("b", 4.9, 10)];
+    expect(ids(suggestFoodPlaces(places, { count: 1 }))).toEqual(["b"]);
+    expect(places.map((x) => x.id)).toEqual(["a", "b"]);
   });
 
   test("nothing fits the strict preferences -> empty list (the page hides the section)", () => {

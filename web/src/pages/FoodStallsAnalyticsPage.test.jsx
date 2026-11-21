@@ -82,18 +82,32 @@ describe("FoodStallsAnalyticsPage", () => {
       "GET /api/analytics/overview": ok({
         ...overview,
         suggestionsBasedOn: "preferences",
-        suggestions: [{ ...overview.suggestions[0], matchedOn: ["cuisine", "hidden gem"] }],
+        suggestions: [
+          {
+            ...overview.suggestions[0],
+            matchScore: 0.82,
+            distanceM: 450,
+            matchedOn: ["cuisine", "hidden gem"],
+          },
+        ],
       }),
     });
     renderWithProviders(<FoodStallsAnalyticsPage />);
 
     const suggestions = await screen.findByRole("region", { name: "Suggested for you" });
-    expect(within(suggestions).getByText("Matches your cuisine, hidden gem")).toBeVisible();
+    expect(within(suggestions).getByText(/Matches your cuisine, hidden gem/)).toHaveTextContent(
+      "82% match · Matches your cuisine, hidden gem",
+    );
+    expect(within(suggestions).getByText(/450 m away/)).toBeInTheDocument();
     const url = new URL(fetchFn.mock.calls[0][0]);
     expect(url.searchParams.get("halal")).toBe("true");
     expect(url.searchParams.get("maxPrice")).toBe("2");
     expect(url.searchParams.get("cuisine")).toBe("malay");
     expect(url.searchParams.get("pastPlaceIds")).toBe("s1,s2");
+    // Near the last place chosen on Discover; Komtar when none was chosen.
+    expect(url.searchParams.get("lat")).toBe("5.4145");
+    expect(url.searchParams.get("lng")).toBe("100.3292");
+    expect(within(suggestions).getByText(/within 3 km of Komtar/)).toBeInTheDocument();
   });
 
   test("no matching places -> the suggestion section is hidden", async () => {

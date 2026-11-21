@@ -50,11 +50,12 @@ async function findRatedFoodPlaces() {
   return rows;
 }
 
-// Area, cuisine and price level of the places in the user's saved trips (past choices for
-// Food Place Suggestion). ids are UUIDs checked by the service; sent as one parameter.
+// Features of the places in the user's saved trips (past choices, from which Food Place
+// Suggestion learns the user's taste). ids are UUIDs checked by the service; sent as one parameter.
 async function findPlaceFeatures(ids) {
   const { rows } = await db.query(
-    `select id, area, cuisine, price_level
+    `select id, area, cuisine, price_level,
+            avg_rating::float8 as avg_rating, review_count
        from places
       where id = any($1::uuid[])`,
     [ids],
