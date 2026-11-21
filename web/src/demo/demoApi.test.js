@@ -114,15 +114,19 @@ describe("Route Planner (demo)", () => {
 
   test("plans an open route through every stop, starting at the first", async () => {
     const placeIds = ids.slice(0, 5);
-    const data = await route({ placeIds, travelMode: "walking" });
+    // Monday 10:00: the sample places' opening hours are used as time windows.
+    const data = await route({ placeIds, travelMode: "walking", day: "mon", startTime: "10:00" });
     expect(data.order.map((p) => p.id).sort()).toEqual([...placeIds].sort());
     expect(data.order[0].id).toBe(placeIds[0]);
     expect(data.legs).toHaveLength(4);
     expect(data.legs.every((leg) => leg.path.length >= 2)).toBe(true);
-    // Brute force is exact, so ACO and nearest neighbour can never beat it.
-    const { aco, nearestNeighbour, bruteForce } = data.comparison;
-    expect(bruteForce.totalTimeS).toBeLessThanOrEqual(aco.totalTimeS);
-    expect(bruteForce.totalTimeS).toBeLessThanOrEqual(nearestNeighbour.totalTimeS);
+    // Brute force is exact for the same goal (fewest closed stops, then the shortest trip),
+    // so ACO can never beat it.
+    const { aco, bruteForce } = data.comparison;
+    expect(bruteForce.closedStops).toBeLessThanOrEqual(aco.closedStops);
+    if (bruteForce.closedStops === aco.closedStops) {
+      expect(bruteForce.durationS).toBeLessThanOrEqual(aco.durationS + 1);
+    }
     expect(data.graph.source).toMatch(/estimate/i);
   });
 

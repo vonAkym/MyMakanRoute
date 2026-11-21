@@ -26,6 +26,7 @@ export function describeMatch(matchedOn = []) {
 export default function SuggestionsCard({
   suggestions,
   basedOn,
+  nearName,
   onOpen,
   className = "",
   children,
@@ -38,12 +39,14 @@ export default function SuggestionsCard({
       <h2 id="suggest-title">Suggested for you</h2>
       {byPreferences ? (
         <p className="muted small">
-          Places that match your preferences and past trips, best matches first.
+          Learned from your preferences and past trips: places like the ones you enjoy, closer
+          places first{nearName ? `, within 3 km of ${nearName}` : ""}.
         </p>
       ) : (
         <p className="muted small">
-          Best rated hidden gems. <Link to="/profile">Set your preferences</Link> to get suggestions
-          that fit you.
+          Best rated hidden gems{nearName ? ` within 3 km of ${nearName}` : ""}.{" "}
+          <Link to="/profile">Set your preferences</Link> or save a trip to get suggestions that fit
+          you.
         </p>
       )}
       <ol className="suggestions">
